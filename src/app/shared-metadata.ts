@@ -1,9 +1,9 @@
 import { siteConfig } from '@/content/site';
 import { getSiteOrigin } from '@/lib/site-url';
 
-export const TITLE = siteConfig.title;
-export const DESCRIPTION = siteConfig.description;
-export const SITE_URL = getSiteOrigin();
+const TITLE = siteConfig.title;
+const DESCRIPTION = siteConfig.description;
+const SITE_URL = getSiteOrigin();
 
 export const defaultMetadata = {
   title: TITLE,

@@ -220,13 +220,34 @@ function PagedRows<T>({
   items,
   renderItem,
   getKey,
-  itemsPerPage = 3,
+  mobileItemsPerPage = 3,
+  desktopItemsPerPage = 4,
 }: {
   items: T[];
   renderItem: (item: T, index: number) => React.ReactNode;
   getKey: (item: T, index: number) => string;
-  itemsPerPage?: number;
+  mobileItemsPerPage?: number;
+  desktopItemsPerPage?: number;
 }) {
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const mediaQuery = window.matchMedia('(min-width: 600px)');
+    const updateViewport = () => setIsDesktop(mediaQuery.matches);
+
+    updateViewport();
+    mediaQuery.addEventListener('change', updateViewport);
+
+    return () => {
+      mediaQuery.removeEventListener('change', updateViewport);
+    };
+  }, []);
+
+  const itemsPerPage = isDesktop ? desktopItemsPerPage : mobileItemsPerPage;
   const pages = useMemo(
     () => chunkItems(items, itemsPerPage),
     [items, itemsPerPage]

@@ -24,6 +24,11 @@ const calSans = LocalFont({
 export const metadata: Metadata = {
   ...defaultMetadata,
   keywords: ['Eric Leung', 'ericleung.hk', 'portfolio', 'links'],
+  icons: {
+    icon: '/icon.svg',
+    shortcut: '/icon.svg',
+    apple: '/apple-icon.svg',
+  },
   twitter: {
     ...twitterMetadata,
   },
@@ -37,6 +42,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   minimumScale: 1,
   maximumScale: 1,
+  themeColor: '#f97316',
 };
 
 export default function RootLayout({

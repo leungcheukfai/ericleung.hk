@@ -43,7 +43,7 @@ export function createAdminSessionToken() {
   return `${encoded}.${signValue(encoded)}`;
 }
 
-export function verifyAdminSessionToken(token: string) {
+function verifyAdminSessionToken(token: string) {
   const [encoded, signature] = token.split('.');
   if (!encoded || !signature) {
     return false;
@@ -79,4 +79,3 @@ export const adminSessionCookie = {
   name: SESSION_COOKIE,
   maxAge: SESSION_TTL_SECONDS,
 };
-

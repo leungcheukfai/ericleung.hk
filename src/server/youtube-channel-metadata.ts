@@ -15,7 +15,7 @@ function normalizeYouTubeTitle(title?: string) {
   return title?.replace(/\s*-\s*YouTube$/i, '').trim();
 }
 
-export async function getYouTubeChannelMetadata(
+async function getYouTubeChannelMetadata(
   url: string
 ): Promise<YouTubeChannelMetadata | null> {
   try {

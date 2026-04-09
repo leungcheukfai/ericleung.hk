@@ -1,6 +1,6 @@
 import type { SiteCard } from '@/content/site';
 
-export type UrlPreview = {
+type UrlPreview = {
   title?: string;
   description?: string;
   image?: string;

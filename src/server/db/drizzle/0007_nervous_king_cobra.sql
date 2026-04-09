@@ -1,1 +1,0 @@
-ALTER TABLE "link" ALTER COLUMN "is_public" SET DEFAULT true;

@@ -1,4 +1,4 @@
-export type ThemePreset = {
+type ThemePreset = {
   name: string;
   label: string;
   pro: boolean;
@@ -8,7 +8,7 @@ export type ThemePreset = {
   };
 };
 
-export const THEME_PRESETS: ThemePreset[] = [
+const THEME_PRESETS: ThemePreset[] = [
   {
     name: 'default',
     label: 'Default',

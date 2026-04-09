@@ -1,6 +1,6 @@
 # `ericleung.hk`
 
-Config-driven personal website built from the OpenBio bento layout and simplified into a single-owner site.
+Config-driven personal website with a bento layout, private analytics, and Beehiiv-powered newsletter signup.
 
 ## What Changed
 
@@ -35,6 +35,10 @@ The homepage supports these card types inside `src/content/site.ts`:
 - `weather`
 - `twitter`
 - `music`
+- `podcasts`
+- `youtube-channels`
+- `books`
+- `favorites`
 - `calendar`
 - `email-collect`
 - `views`

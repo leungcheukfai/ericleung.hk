@@ -1,1 +1,0 @@
-ALTER TABLE "link" ADD COLUMN "custom_footer" text;

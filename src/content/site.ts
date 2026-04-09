@@ -1,10 +1,10 @@
 import type { BentoSize } from '@/components/bento/sizes';
 
-export type SiteBreakpoint = 'sm' | 'md';
+type SiteBreakpoint = 'sm' | 'md';
 
-export type SiteCardSize = Record<SiteBreakpoint, BentoSize>;
+type SiteCardSize = Record<SiteBreakpoint, BentoSize>;
 
-export type SiteCardPosition = Partial<
+type SiteCardPosition = Partial<
   Record<
     SiteBreakpoint,
     {
@@ -159,7 +159,7 @@ export type SiteCard =
   | SiteCalendarCard
   | SiteViewsCard;
 
-export type SiteConfig = {
+type SiteConfig = {
   domain: string;
   title: string;
   description: string;
@@ -194,24 +194,19 @@ export const siteConfig: SiteConfig = {
     'Personal website for Eric Leung. Replace this copy in src/content/site.ts with your own bio, links, and bento cards.',
   keywords: ['Eric Leung', 'ericleung.hk', 'portfolio', 'personal website'],
   theme: {
-    preset: 'slate',
+    preset: 'sunset',
     darkMode: false,
-    accentColor: '#0f766e',
+    accentColor: '#f97316',
   },
   profile: {
     name: 'Eric Leung',
-    handle: '@ericleung',
+    handle: '@ericleung.hk',
     role: 'Builder on the internet',
     location: 'Hong Kong',
     avatar: '/ericleung.webp',
     bioHtml:
-      '<p>I love learning about new technology and I’m exploring AI and cybersecurity. I also enjoy Buddhist wisdom and traveling to space as my life goal.</p>',
-    actions: [
-      {
-        label: 'Contact',
-        href: 'mailto:hello@ericleung.hk',
-      },
-    ],
+      '<p>I’m passionate about exploring emerging technologies, especially AI and smart home innovations. I also find inspiration in Buddhist wisdom, and I aspire to one day travel to space.</p>',
+    actions: [],
   },
   footer: {
     text: 'Update this footer in src/content/site.ts before you deploy.',
@@ -259,12 +254,12 @@ export const siteConfig: SiteConfig = {
       username: 'leungcheukfai',
     },
     {
-      id: 'hong-kong-weather',
-      type: 'weather',
-      size: { sm: '2x2', md: '2x2' },
-      latitude: 22.3193,
-      longitude: 114.1694,
-      locationName: 'Hong Kong',
+      id: 'book-a-time',
+      type: 'calendar',
+      size: { sm: '4x2', md: '4x2' },
+      url: 'https://cal.com/ericleung/30min',
+      title: 'Book a time',
+      description: 'Schedule a 30-minute meeting with me',
     },
     {
       id: 'newsletter',
@@ -530,7 +525,5 @@ export function getSiteCardTitle(card: SiteCard): string {
       return card.title ?? 'Calendar';
     case 'views':
       return 'Views';
-    default:
-      return card.id;
   }
 }

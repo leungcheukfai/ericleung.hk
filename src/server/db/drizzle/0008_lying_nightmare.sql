@@ -1,1 +1,0 @@
-ALTER TABLE "user" ADD COLUMN "email_digest" boolean DEFAULT true NOT NULL;
