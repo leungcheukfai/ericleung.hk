@@ -7,3 +7,5 @@ node_modules
 output
 .playwright-cli
 tsconfig.tsbuildinfo
+.vercel
+.env*.local
