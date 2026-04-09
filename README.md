@@ -101,7 +101,8 @@ Then open [http://localhost:3000](http://localhost:3000).
 - `BEEHIIV_API_KEY`
 - `BEEHIIV_PUBLICATION_ID`
 
-5. Redeploy.
+5. Run `bun run db:push` once against your production database before or after the first deploy.
+6. Redeploy.
 
 Use a managed Postgres database such as Neon for production.
 
