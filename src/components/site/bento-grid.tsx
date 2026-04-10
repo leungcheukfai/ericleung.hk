@@ -31,6 +31,26 @@ function getSizeClasses(card: SiteCard) {
   return cn(sm, md);
 }
 
+function getPositionClasses(card: SiteCard) {
+  return cn(
+    card.position?.sm &&
+      '[grid-column-start:var(--sm-col-start)] [grid-row-start:var(--sm-row-start)]'
+  );
+}
+
+function getPositionStyles(card: SiteCard, index: number) {
+  const style: React.CSSProperties & Record<string, string> = {
+    animationDelay: `${index * 75}ms`,
+  };
+
+  if (card.position?.sm) {
+    style['--sm-col-start'] = String(card.position.sm.x + 1);
+    style['--sm-row-start'] = String(card.position.sm.y + 1);
+  }
+
+  return style;
+}
+
 export default function SiteBentoGrid({
   cards,
   summary,
@@ -58,8 +78,13 @@ export default function SiteBentoGrid({
       {cards.map((card, index) => (
         <div
           key={card.id}
-          className={cn('min-h-0 min-w-0', getSizeClasses(card), 'animate-fade-up')}
-          style={{ animationDelay: `${index * 75}ms` }}
+          className={cn(
+            'min-h-0 min-w-0',
+            getSizeClasses(card),
+            getPositionClasses(card),
+            'animate-fade-up'
+          )}
+          style={getPositionStyles(card, index)}
         >
           <SiteCardView
             card={card}

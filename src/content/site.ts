@@ -229,6 +229,7 @@ export const siteConfig: SiteConfig = {
       type: 'link',
       size: { sm: '2x2', md: '2x2' },
       position: {
+        sm: { x: 0, y: 0 },
         md: { x: 0, y: 0 },
       },
       href: 'https://www.threads.net/@ericleung.hk',
@@ -240,6 +241,7 @@ export const siteConfig: SiteConfig = {
       type: 'link',
       size: { sm: '2x2', md: '4x2' },
       position: {
+        sm: { x: 1, y: 2 },
         md: { x: 1, y: 0 },
       },
       href: 'https://gtmguide.hk',
@@ -253,6 +255,7 @@ export const siteConfig: SiteConfig = {
       type: 'map',
       size: { sm: '2x2', md: '2x2' },
       position: {
+        sm: { x: 1, y: 0 },
         md: { x: 3, y: 0 },
       },
       latitude: 22.3193,
@@ -263,12 +266,18 @@ export const siteConfig: SiteConfig = {
       id: 'github-profile',
       type: 'github',
       size: { sm: '4x2', md: '4x2' },
+      position: {
+        sm: { x: 0, y: 4 },
+      },
       username: 'leungcheukfai',
     },
     {
       id: 'book-a-time',
       type: 'calendar',
-      size: { sm: '4x2', md: '4x2' },
+      size: { sm: '2x2', md: '4x2' },
+      position: {
+        sm: { x: 0, y: 2 },
+      },
       url: 'https://cal.com/ericleung/30min',
       title: 'Book a time',
       description: 'Schedule a 30-minute meeting with me',
