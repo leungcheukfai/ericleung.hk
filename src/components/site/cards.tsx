@@ -192,7 +192,7 @@ function PagedDots({
   }
 
   return (
-    <div className="mt-1 flex items-center justify-center gap-1.5">
+    <div className="mt-1 flex items-center justify-center gap-1">
       {Array.from({ length: pageCount }, (_, index) => {
         const active = index === currentPage;
 
@@ -202,14 +202,18 @@ function PagedDots({
             type="button"
             aria-label={`Show page ${index + 1}`}
             aria-pressed={active}
-            className={cn(
-              'h-2 rounded-full transition-all',
-              active
-                ? 'w-5 bg-primary'
-                : 'w-2 bg-border hover:bg-muted-foreground/40'
-            )}
+            className="inline-flex min-h-[44px] min-w-[44px] touch-manipulation items-center justify-center rounded-full"
             onClick={() => onSelect(index)}
-          />
+          >
+            <span
+              className={cn(
+                'block h-2 rounded-full transition-all',
+                active
+                  ? 'w-5 bg-primary'
+                  : 'w-2 bg-border hover:bg-muted-foreground/40'
+              )}
+            />
+          </button>
         );
       })}
     </div>
