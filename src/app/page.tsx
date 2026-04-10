@@ -3,7 +3,7 @@ import {
   ogMetadata,
   twitterMetadata,
 } from '@/app/shared-metadata';
-import SiteBentoGrid from '@/components/site/bento-grid';
+import SiteGridShell from '@/components/site/grid-shell';
 import SiteHeader from '@/components/site/header';
 import SiteThemeWrapper from '@/components/site/theme-wrapper';
 import SiteViewTracker from '@/components/site/view-tracker';
@@ -69,7 +69,7 @@ export default async function HomePage() {
               <SiteHeader />
             </div>
 
-            <SiteBentoGrid
+            <SiteGridShell
               cards={siteConfig.cards}
               summary={summary}
               previews={previews}
