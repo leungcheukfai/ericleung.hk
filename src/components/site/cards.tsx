@@ -192,7 +192,7 @@ function PagedDots({
   }
 
   return (
-    <div className="mt-1 flex items-center justify-center gap-1">
+    <div className="mt-0.5 flex items-center justify-center gap-1 md:mt-1">
       {Array.from({ length: pageCount }, (_, index) => {
         const active = index === currentPage;
 
@@ -202,7 +202,7 @@ function PagedDots({
             type="button"
             aria-label={`Show page ${index + 1}`}
             aria-pressed={active}
-            className="inline-flex min-h-[44px] min-w-[44px] touch-manipulation items-center justify-center rounded-full"
+            className="inline-flex min-h-9 min-w-9 touch-manipulation items-center justify-center rounded-full md:min-h-[44px] md:min-w-[44px]"
             onClick={() => onSelect(index)}
           >
             <span
@@ -266,14 +266,14 @@ function PagedRows<T>({
 
   return (
     <>
-      <div className="mt-1.5 flex-1 overflow-hidden">
+      <div className="mt-1 flex-1 overflow-hidden md:mt-1.5">
         <div
           className="flex h-full transition-transform duration-300 ease-out"
           style={{ transform: `translateX(-${currentPage * 100}%)` }}
         >
           {pages.map((pageItems, pageIndex) => (
             <div key={pageIndex} className="w-full shrink-0">
-              <div className="space-y-1.5">
+              <div className="space-y-1 md:space-y-1.5">
                 {pageItems.map((item, itemIndex) => {
                   const absoluteIndex = pageIndex * itemsPerPage + itemIndex;
                   return (
@@ -1883,22 +1883,22 @@ function MusicCard({
 
 function PodcastsCard({ card }: { card: SitePodcastsCard }) {
   return (
-    <CardShell className="flex h-full w-full flex-col p-4">
+    <CardShell className="flex h-full w-full flex-col p-3 md:p-4 md:pb-2">
       <div className="flex items-start justify-between gap-3">
-        <div className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-border/60 bg-muted/50">
-          <PiApplePodcastsLogoFill className="h-4.5 w-4.5 text-[#872EC4]" />
+        <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-border/60 bg-muted/50 md:h-9 md:w-9">
+          <PiApplePodcastsLogoFill className="h-4 w-4 text-[#872EC4] md:h-4.5 md:w-4.5" />
         </div>
-        <div className="rounded-full border border-border/60 bg-muted/40 px-2.5 py-0.5 text-[10px] text-muted-foreground">
+        <div className="rounded-full border border-border/60 bg-muted/40 px-2 py-0.5 text-[10px] text-muted-foreground md:px-2.5">
           {card.items.length} {card.items.length === 1 ? 'podcast' : 'podcasts'}
         </div>
       </div>
 
-      <div className="mt-1.5 space-y-0.5">
-        <p className="font-cal text-base leading-tight">
+      <div className="mt-1 space-y-0.5 md:mt-1.5 md:space-y-1">
+        <p className="font-cal text-[15px] leading-tight md:text-base">
           {card.title ?? 'Podcasts'}
         </p>
         {card.description && (
-          <p className="text-muted-foreground text-xs">{card.description}</p>
+          <p className="text-[11px] text-muted-foreground md:text-xs">{card.description}</p>
         )}
       </div>
 
@@ -1908,8 +1908,8 @@ function PodcastsCard({ card }: { card: SitePodcastsCard }) {
           getKey={(item) => item.href ?? `${card.id}-${item.title}`}
           renderItem={(item) => {
             const row = (
-              <div className="flex h-[72px] items-center gap-2.5 overflow-hidden rounded-2xl border border-border/60 bg-background/70 px-3 py-1 transition-colors hover:bg-muted/30">
-                <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl border border-border/60 bg-muted/50">
+              <div className="flex h-[58px] items-center gap-2 overflow-hidden rounded-xl border border-border/60 bg-background/70 px-2.5 py-1 transition-colors hover:bg-muted/30 md:h-16 md:gap-2.5 md:rounded-2xl md:px-3">
+                <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-xl border border-border/60 bg-muted/50 md:h-10 md:w-10">
                   {item.artwork ? (
                     <Image
                       src={item.artwork}
@@ -1925,17 +1925,17 @@ function PodcastsCard({ card }: { card: SitePodcastsCard }) {
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate font-medium text-sm leading-tight">
+                  <p className="truncate text-[13px] font-medium leading-tight md:text-sm">
                     {item.title}
                   </p>
                   {item.publisher && (
-                    <p className="mt-0.5 truncate text-muted-foreground text-xs">
+                    <p className="mt-0.5 truncate text-[11px] text-muted-foreground md:text-xs">
                       {item.publisher}
                     </p>
                   )}
                 </div>
                 {item.href && (
-                  <ExternalLink className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+                  <ExternalLink className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground md:h-4 md:w-4" />
                 )}
               </div>
             );
@@ -1979,22 +1979,22 @@ function YouTubeChannelsCard({
   metadataMap?: Record<string, YouTubeChannelMetadata | null>;
 }) {
   return (
-    <CardShell className="flex h-full w-full flex-col p-4">
+    <CardShell className="flex h-full w-full flex-col p-3 md:p-4 md:pb-2">
       <div className="flex items-start justify-between gap-3">
-        <div className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-border/60 bg-muted/50">
-          <FaYoutube className="h-4.5 w-4.5 text-[#FF0000]" />
+        <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-border/60 bg-muted/50 md:h-9 md:w-9">
+          <FaYoutube className="h-4 w-4 text-[#FF0000] md:h-4.5 md:w-4.5" />
         </div>
-        <div className="rounded-full border border-border/60 bg-muted/40 px-2.5 py-0.5 text-[10px] text-muted-foreground">
+        <div className="rounded-full border border-border/60 bg-muted/40 px-2 py-0.5 text-[10px] text-muted-foreground md:px-2.5">
           {card.items.length} {card.items.length === 1 ? 'channel' : 'channels'}
         </div>
       </div>
 
-      <div className="mt-1.5 space-y-0.5">
-        <p className="font-cal text-base leading-tight">
+      <div className="mt-1 space-y-0.5 md:mt-1.5 md:space-y-1">
+        <p className="font-cal text-[15px] leading-tight md:text-base">
           {card.title ?? 'YouTube channels'}
         </p>
         {card.description && (
-          <p className="text-muted-foreground text-xs">{card.description}</p>
+          <p className="text-[11px] text-muted-foreground md:text-xs">{card.description}</p>
         )}
       </div>
 
@@ -2014,8 +2014,8 @@ function YouTubeChannelsCard({
               className="block"
               onClick={() => trackCardClick(card.id, item.href)}
             >
-              <div className="flex h-[72px] items-center gap-2.5 overflow-hidden rounded-2xl border border-border/60 bg-background/70 px-3 py-1 transition-colors hover:bg-muted/30">
-                <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-border/60 bg-muted/50">
+              <div className="flex h-[58px] items-center gap-2 overflow-hidden rounded-xl border border-border/60 bg-background/70 px-2.5 py-1 transition-colors hover:bg-muted/30 md:h-16 md:gap-2.5 md:rounded-2xl md:px-3">
+                <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full border border-border/60 bg-muted/50 md:h-10 md:w-10">
                   {artwork ? (
                     <Image
                       src={artwork}
@@ -2031,9 +2031,9 @@ function YouTubeChannelsCard({
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate font-medium text-sm leading-tight">{title}</p>
+                  <p className="truncate text-[13px] font-medium leading-tight md:text-sm">{title}</p>
                 </div>
-                <ExternalLink className="h-4 w-4 shrink-0 text-muted-foreground" />
+                <ExternalLink className="h-3.5 w-3.5 shrink-0 text-muted-foreground md:h-4 md:w-4" />
               </div>
             </a>
           );
@@ -2051,20 +2051,20 @@ function BooksCard({
   metadataMap?: Record<string, BookMetadata | null>;
 }) {
   return (
-    <CardShell className="flex h-full w-full flex-col p-4">
+    <CardShell className="flex h-full w-full flex-col p-3 md:p-4 md:pb-2">
       <div className="flex items-start justify-between gap-3">
-        <div className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-border/60 bg-muted/50">
-          <BookOpen className="h-4.5 w-4.5 text-[#8B5E34]" />
+        <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-border/60 bg-muted/50 md:h-9 md:w-9">
+          <BookOpen className="h-4 w-4 text-[#8B5E34] md:h-4.5 md:w-4.5" />
         </div>
-        <div className="rounded-full border border-border/60 bg-muted/40 px-2.5 py-0.5 text-[10px] text-muted-foreground">
+        <div className="rounded-full border border-border/60 bg-muted/40 px-2 py-0.5 text-[10px] text-muted-foreground md:px-2.5">
           {card.items.length} {card.items.length === 1 ? 'book' : 'books'}
         </div>
       </div>
 
-      <div className="mt-1.5 space-y-0.5">
-        <p className="font-cal text-base leading-tight">{card.title ?? 'Books'}</p>
+      <div className="mt-1 space-y-0.5 md:mt-1.5 md:space-y-1">
+        <p className="font-cal text-[15px] leading-tight md:text-base">{card.title ?? 'Books'}</p>
         {card.description && (
-          <p className="text-muted-foreground text-xs">{card.description}</p>
+          <p className="text-[11px] text-muted-foreground md:text-xs">{card.description}</p>
         )}
       </div>
 
@@ -2085,8 +2085,8 @@ function BooksCard({
               className="block"
               onClick={() => trackCardClick(card.id, item.href)}
             >
-              <div className="flex h-[72px] items-center gap-2.5 overflow-hidden rounded-2xl border border-border/60 bg-background/70 px-3 py-1 transition-colors hover:bg-muted/30">
-                <div className="relative h-10 w-8 shrink-0 overflow-hidden rounded-lg border border-border/60 bg-muted/50">
+              <div className="flex h-[58px] items-center gap-2 overflow-hidden rounded-xl border border-border/60 bg-background/70 px-2.5 py-1 transition-colors hover:bg-muted/30 md:h-16 md:gap-2.5 md:rounded-2xl md:px-3">
+                <div className="relative h-9 w-7 shrink-0 overflow-hidden rounded-lg border border-border/60 bg-muted/50 md:h-10 md:w-8">
                   {artwork ? (
                     <Image
                       src={artwork}
@@ -2102,16 +2102,16 @@ function BooksCard({
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate font-medium text-sm leading-tight">
+                  <p className="truncate text-[13px] font-medium leading-tight md:text-sm">
                     {title}
                   </p>
                   {subtitle && (
-                    <p className="mt-0.5 truncate text-muted-foreground text-xs">
+                    <p className="mt-0.5 truncate text-[11px] text-muted-foreground md:text-xs">
                       {subtitle}
                     </p>
                   )}
                 </div>
-                <ExternalLink className="h-4 w-4 shrink-0 text-muted-foreground" />
+                <ExternalLink className="h-3.5 w-3.5 shrink-0 text-muted-foreground md:h-4 md:w-4" />
               </div>
             </a>
           );
@@ -2123,22 +2123,22 @@ function BooksCard({
 
 function FavoritesCard({ card }: { card: SiteFavoritesCard }) {
   return (
-    <CardShell className="flex h-full w-full flex-col p-4">
+    <CardShell className="flex h-full w-full flex-col p-3 md:p-4 md:pb-2">
       <div className="flex items-start justify-between gap-3">
-        <div className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-border/60 bg-muted/50">
-          <Heart className="h-4.5 w-4.5 text-red-500" />
+        <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-border/60 bg-muted/50 md:h-9 md:w-9">
+          <Heart className="h-4 w-4 text-red-500 md:h-4.5 md:w-4.5" />
         </div>
-        <div className="rounded-full border border-border/60 bg-muted/40 px-2.5 py-0.5 text-[10px] text-muted-foreground">
+        <div className="rounded-full border border-border/60 bg-muted/40 px-2 py-0.5 text-[10px] text-muted-foreground md:px-2.5">
           {card.items.length} {card.items.length === 1 ? 'pick' : 'picks'}
         </div>
       </div>
 
-      <div className="mt-1.5 space-y-0.5">
-        <p className="font-cal text-base leading-tight">
+      <div className="mt-1 space-y-0.5 md:mt-1.5 md:space-y-1">
+        <p className="font-cal text-[15px] leading-tight md:text-base">
           {card.title ?? 'Favorites'}
         </p>
         {card.description && (
-          <p className="text-muted-foreground text-xs">{card.description}</p>
+          <p className="text-[11px] text-muted-foreground md:text-xs">{card.description}</p>
         )}
       </div>
 
@@ -2156,8 +2156,8 @@ function FavoritesCard({ card }: { card: SiteFavoritesCard }) {
               className="block"
               onClick={() => trackCardClick(card.id, item.href)}
             >
-              <div className="flex h-[72px] items-center gap-2.5 overflow-hidden rounded-2xl border border-border/60 bg-background/70 px-3 py-1 transition-colors hover:bg-muted/30">
-                <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-border/60 bg-muted/50">
+              <div className="flex h-[58px] items-center gap-2 overflow-hidden rounded-xl border border-border/60 bg-background/70 px-2.5 py-1 transition-colors hover:bg-muted/30 md:h-16 md:gap-2.5 md:rounded-2xl md:px-3">
+                <div className="relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-border/60 bg-muted/50 md:h-10 md:w-10">
                   {favicon ? (
                     <Image
                       src={favicon}
@@ -2171,16 +2171,16 @@ function FavoritesCard({ card }: { card: SiteFavoritesCard }) {
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate font-medium text-sm leading-tight">
+                  <p className="truncate text-[13px] font-medium leading-tight md:text-sm">
                     {item.title}
                   </p>
                   {item.tagline && (
-                    <p className="mt-0.5 truncate text-muted-foreground text-xs">
+                    <p className="mt-0.5 truncate text-[11px] text-muted-foreground md:text-xs">
                       {item.tagline}
                     </p>
                   )}
                 </div>
-                <ExternalLink className="h-4 w-4 shrink-0 text-muted-foreground" />
+                <ExternalLink className="h-3.5 w-3.5 shrink-0 text-muted-foreground md:h-4 md:w-4" />
               </div>
             </a>
           );

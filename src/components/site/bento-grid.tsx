@@ -54,7 +54,7 @@ export default function SiteBentoGrid({
   profileAvatar?: string;
 }) {
   return (
-    <div className="grid auto-rows-[76px] grid-cols-2 gap-6 md:grid-cols-4">
+    <div className="grid auto-rows-[76px] grid-cols-2 gap-x-4 gap-y-3 md:grid-cols-4 md:gap-y-4">
       {cards.map((card, index) => (
         <div
           key={card.id}

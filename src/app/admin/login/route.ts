@@ -1,8 +1,19 @@
-import { adminSessionCookie, createAdminSessionToken, isValidAdminPassword } from '@/lib/admin-auth';
+import {
+  adminSessionCookie,
+  createAdminSessionToken,
+  isAdminConfigured,
+  isValidAdminPassword,
+} from '@/lib/admin-auth';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
+  if (!isAdminConfigured()) {
+    return NextResponse.redirect(new URL('/admin', request.url), {
+      status: 303,
+    });
+  }
+
   const formData = await request.formData();
   const password = String(formData.get('password') ?? '');
 

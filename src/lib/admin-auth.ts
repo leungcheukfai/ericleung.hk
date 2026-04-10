@@ -17,10 +17,18 @@ function base64UrlDecode(value: string) {
   return Buffer.from(value, 'base64url').toString('utf8');
 }
 
+export function isAdminConfigured() {
+  return Boolean(
+    env.SITE_ADMIN_PASSWORD && env.ADMIN_SESSION_SECRET
+  );
+}
+
 function signValue(value: string) {
-  return createHmac('sha256', env.ADMIN_SESSION_SECRET)
-    .update(value)
-    .digest('base64url');
+  const secret = env.ADMIN_SESSION_SECRET;
+  if (!secret) {
+    throw new Error('ADMIN_SESSION_SECRET is not configured');
+  }
+  return createHmac('sha256', secret).update(value).digest('base64url');
 }
 
 function hashSecret(value: string) {
@@ -32,7 +40,11 @@ function safeEqualText(a: string, b: string) {
 }
 
 export function isValidAdminPassword(value: string) {
-  return safeEqualText(value, env.SITE_ADMIN_PASSWORD);
+  const password = env.SITE_ADMIN_PASSWORD;
+  if (!password) {
+    return false;
+  }
+  return safeEqualText(value, password);
 }
 
 export function createAdminSessionToken() {
@@ -44,6 +56,10 @@ export function createAdminSessionToken() {
 }
 
 function verifyAdminSessionToken(token: string) {
+  if (!env.ADMIN_SESSION_SECRET) {
+    return false;
+  }
+
   const [encoded, signature] = token.split('.');
   if (!encoded || !signature) {
     return false;

@@ -245,7 +245,7 @@ export const siteConfig: SiteConfig = {
       href: 'https://gtmguide.hk',
       label: 'GTM Guide',
       description:
-        'Practical go-to-market ideas, systems, and playbooks I am building right now.',
+        'Practical go-to-market tools and playbooks I am curating right now.',
       variant: 'spotlight',
     },
     {
@@ -279,7 +279,7 @@ export const siteConfig: SiteConfig = {
       size: { sm: '4x2', md: '4x2' },
       heading: 'Stay in the loop',
       description:
-        'Subscribe to the Unwire newsletter for new posts and useful ideas.',
+        'Subscribe to the my newsletter for latest tech news.',
       buttonText: 'Subscribe',
     },
     {

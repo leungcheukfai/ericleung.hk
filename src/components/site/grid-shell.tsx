@@ -11,7 +11,7 @@ import dynamic from 'next/dynamic';
 const SiteBentoGrid = dynamic(() => import('@/components/site/bento-grid'), {
   ssr: false,
   loading: () => (
-    <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+    <div className="grid grid-cols-2 gap-x-4 gap-y-3 md:grid-cols-4 md:gap-y-4">
       <div className="h-[176px] animate-pulse rounded-2xl border border-border bg-card/70" />
       <div className="h-[176px] animate-pulse rounded-2xl border border-border bg-card/70 md:col-span-2" />
       <div className="h-[176px] animate-pulse rounded-2xl border border-border bg-card/70" />

@@ -1,5 +1,9 @@
 import TrafficChart from '@/components/site/traffic-chart';
-import { adminSessionCookie, isAdminAuthenticated } from '@/lib/admin-auth';
+import {
+  adminSessionCookie,
+  isAdminAuthenticated,
+  isAdminConfigured,
+} from '@/lib/admin-auth';
 import {
   getDeviceBreakdown,
   getGeoBreakdown,
@@ -89,6 +93,30 @@ export default async function AdminPage({
   const error = Array.isArray(params.error) ? params.error[0] : params.error;
 
   if (!authenticated) {
+    if (!isAdminConfigured()) {
+      return (
+        <main className="mx-auto flex min-h-screen w-full max-w-md items-center px-5 py-10">
+          <section className="w-full rounded-3xl border border-border/60 bg-card p-7 shadow-lg">
+            <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-border/60 bg-muted/50">
+              <LockKeyhole className="h-5 w-5" />
+            </div>
+            <h1 className="mt-5 font-cal text-3xl">Admin</h1>
+            <p className="mt-2 text-muted-foreground text-sm">
+              Private admin is not configured. Set{' '}
+              <code className="rounded bg-muted px-1 py-0.5 text-xs text-foreground">
+                SITE_ADMIN_PASSWORD
+              </code>{' '}
+              and{' '}
+              <code className="rounded bg-muted px-1 py-0.5 text-xs text-foreground">
+                ADMIN_SESSION_SECRET
+              </code>{' '}
+              (32+ characters) in your deployment environment, then redeploy.
+            </p>
+          </section>
+        </main>
+      );
+    }
+
     return (
       <main className="mx-auto flex min-h-screen w-full max-w-md items-center px-5 py-10">
         <section className="w-full rounded-3xl border border-border/60 bg-card p-7 shadow-lg">

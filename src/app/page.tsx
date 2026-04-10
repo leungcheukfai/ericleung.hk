@@ -62,9 +62,9 @@ export default async function HomePage() {
     >
       <SiteViewTracker />
 
-      <main className="container mx-auto flex min-h-screen w-full flex-col items-center gap-y-6 px-4 pt-16 pb-16">
+      <main className="container mx-auto flex min-h-screen w-full flex-col items-center gap-y-5 px-4 pt-16 pb-16">
         <div className="h-full w-full max-w-3xl">
-          <div className="flex flex-col gap-y-6">
+          <div className="flex flex-col gap-y-5">
             <div className="animate-fade-in">
               <SiteHeader />
             </div>

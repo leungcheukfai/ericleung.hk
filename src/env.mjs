@@ -7,8 +7,9 @@ export const env = createEnv({
     NODE_ENV: z
       .enum(['development', 'test', 'production'])
       .default('development'),
-    SITE_ADMIN_PASSWORD: z.string().min(1),
-    ADMIN_SESSION_SECRET: z.string().min(32),
+    /** Required for `/admin`; optional so CI/Vercel can build without secrets. */
+    SITE_ADMIN_PASSWORD: z.string().min(1).optional(),
+    ADMIN_SESSION_SECRET: z.string().min(32).optional(),
     BEEHIIV_API_KEY: z.string().min(1).optional(),
     BEEHIIV_PUBLICATION_ID: z.string().min(1).optional(),
     BETTER_AUTH_SECRET: z.string().min(32).optional(),
