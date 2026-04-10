@@ -2,6 +2,14 @@
 
 Config-driven personal website with a bento layout, private analytics, and Beehiiv-powered newsletter signup.
 
+## License And Attribution
+
+This project is based on [OpenBio](https://github.com/vanxh/openbio) and has been modified for `ericleung.hk`.
+
+- This repository remains licensed under `AGPL-3.0`
+- The public site links to the modified source code, original project, and license
+- The original `LICENSE` file is preserved in this repository
+
 ## What Changed
 
 - Public homepage lives at `/`

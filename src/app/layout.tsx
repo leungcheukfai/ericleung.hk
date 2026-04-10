@@ -25,9 +25,9 @@ export const metadata: Metadata = {
   ...defaultMetadata,
   keywords: ['Eric Leung', 'ericleung.hk', 'portfolio', 'links'],
   icons: {
-    icon: '/icon.svg',
-    shortcut: '/icon.svg',
-    apple: '/apple-icon.svg',
+    icon: '/icon.svg?v=2',
+    shortcut: '/icon.svg?v=2',
+    apple: '/apple-icon.svg?v=2',
   },
   twitter: {
     ...twitterMetadata,

@@ -182,7 +182,13 @@ type SiteConfig = {
     }>;
   };
   footer: {
-    text: string;
+    notice: string;
+    sourceHref: string;
+    sourceLabel: string;
+    upstreamHref: string;
+    upstreamLabel: string;
+    licenseHref: string;
+    licenseLabel: string;
   };
   cards: SiteCard[];
 };
@@ -209,7 +215,13 @@ export const siteConfig: SiteConfig = {
     actions: [],
   },
   footer: {
-    text: 'Update this footer in src/content/site.ts before you deploy.',
+    notice: 'Based on OpenBio, modified by Eric Leung and available under AGPL-3.0.',
+    sourceHref: 'https://github.com/leungcheukfai/ericleung.hk',
+    sourceLabel: 'Source code',
+    upstreamHref: 'https://github.com/vanxh/openbio',
+    upstreamLabel: 'Original project',
+    licenseHref: 'https://github.com/leungcheukfai/ericleung.hk/blob/main/LICENSE',
+    licenseLabel: 'AGPL-3.0 license',
   },
   cards: [
     {

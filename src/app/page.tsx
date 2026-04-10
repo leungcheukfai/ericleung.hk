@@ -28,9 +28,17 @@ export const metadata: Metadata = {
   },
 };
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600;
+
+const EMPTY_SUMMARY = {
+  totalViews: 0,
+  uniqueVisitors: 0,
+  totalClicks: 0,
+  totalSubscribers: 0,
+};
 
 export default async function HomePage() {
+  const needsSummary = siteConfig.cards.some((card) => card.type === 'views');
   const [
     summary,
     previews,
@@ -39,7 +47,7 @@ export default async function HomePage() {
     bookMetadataMap,
   ] =
     await Promise.all([
-      getPublicSiteSummary(),
+      needsSummary ? getPublicSiteSummary() : Promise.resolve(EMPTY_SUMMARY),
       getLinkPreviews(siteConfig.cards),
       getMusicMetadataMap(siteConfig.cards),
       getYouTubeChannelMetadataMap(siteConfig.cards),
@@ -73,8 +81,34 @@ export default async function HomePage() {
             />
 
             <footer className="animate-fade-in py-8 text-center">
-              <div className="inline-flex items-center rounded-full border border-border bg-background/80 px-4 py-2 text-muted-foreground text-sm backdrop-blur-sm">
-                {siteConfig.footer.text}
+              <div className="flex flex-col items-center gap-3 rounded-3xl border border-border bg-background/80 px-5 py-4 text-center text-muted-foreground text-sm backdrop-blur-sm">
+                <p>{siteConfig.footer.notice}</p>
+                <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+                  <a
+                    className="font-medium text-foreground underline underline-offset-4 transition-opacity hover:opacity-70"
+                    href={siteConfig.footer.sourceHref}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {siteConfig.footer.sourceLabel}
+                  </a>
+                  <a
+                    className="font-medium text-foreground underline underline-offset-4 transition-opacity hover:opacity-70"
+                    href={siteConfig.footer.upstreamHref}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {siteConfig.footer.upstreamLabel}
+                  </a>
+                  <a
+                    className="font-medium text-foreground underline underline-offset-4 transition-opacity hover:opacity-70"
+                    href={siteConfig.footer.licenseHref}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {siteConfig.footer.licenseLabel}
+                  </a>
+                </div>
               </div>
             </footer>
           </div>
