@@ -153,6 +153,7 @@ export default function SiteBentoGrid({
     <ResponsiveGridLayout
       className="layout"
       layouts={layouts}
+      measureBeforeMount
       cols={{ xxs: 2, xs: 2, sm: 2, md: 4, lg: 4 }}
       breakpoints={{ lg: 800, md: 600, sm: 300, xs: 0, xxs: 0 }}
       rowHeight={176}
