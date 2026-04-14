@@ -11,6 +11,7 @@ import { siteConfig } from '@/content/site';
 import { getBookMetadataMap } from '@/server/book-metadata';
 import { getLinkPreviews } from '@/server/link-previews';
 import { getMusicMetadataMap } from '@/server/music-metadata';
+import { getSiteCards } from '@/server/site-content';
 import { getPublicSiteSummary } from '@/server/site-analytics';
 import { getYouTubeChannelMetadataMap } from '@/server/youtube-channel-metadata';
 import type { Metadata } from 'next';
@@ -38,7 +39,8 @@ const EMPTY_SUMMARY = {
 };
 
 export default async function HomePage() {
-  const needsSummary = siteConfig.cards.some((card) => card.type === 'views');
+  const cards = await getSiteCards();
+  const needsSummary = cards.some((card) => card.type === 'views');
   const [
     summary,
     previews,
@@ -48,10 +50,10 @@ export default async function HomePage() {
   ] =
     await Promise.all([
       needsSummary ? getPublicSiteSummary() : Promise.resolve(EMPTY_SUMMARY),
-      getLinkPreviews(siteConfig.cards),
-      getMusicMetadataMap(siteConfig.cards),
-      getYouTubeChannelMetadataMap(siteConfig.cards),
-      getBookMetadataMap(siteConfig.cards),
+      getLinkPreviews(cards),
+      getMusicMetadataMap(cards),
+      getYouTubeChannelMetadataMap(cards),
+      getBookMetadataMap(cards),
     ]);
 
   return (
@@ -70,7 +72,7 @@ export default async function HomePage() {
             </div>
 
             <SiteGridShell
-              cards={siteConfig.cards}
+              cards={cards}
               summary={summary}
               previews={previews}
               musicMetadataMap={musicMetadataMap}

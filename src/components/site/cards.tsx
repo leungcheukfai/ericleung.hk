@@ -10,7 +10,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
 import type {
   SiteBooksCard,
   SiteCalendarCard,
@@ -29,17 +28,17 @@ import type {
   SiteWeatherCard,
   SiteYouTubeChannelsCard,
 } from '@/content/site';
+import { cn } from '@/lib/utils';
 import type { BookMetadata } from '@/server/book-metadata';
 import type { MusicMetadata } from '@/server/music-metadata';
 import type { SiteMetricsSummary } from '@/server/site-analytics';
 import type { YouTubeChannelMetadata } from '@/server/youtube-channel-metadata';
 import {
-  Calendar,
-  AtSign,
   BookOpen,
-  Globe,
+  Calendar,
   ExternalLink,
   Eye,
+  Globe,
   Heart,
   Mail,
   MapPin,
@@ -60,6 +59,7 @@ import {
 } from 'react-icons/fa';
 import { FaThreads, FaXTwitter } from 'react-icons/fa6';
 import { PiApplePodcastsLogoFill } from 'react-icons/pi';
+import { useSiteBreakpoint } from './breakpoint-context';
 
 export type LinkPreview = {
   title?: string;
@@ -159,6 +159,11 @@ function chunkItems<T>(items: T[], size: number) {
   return pages;
 }
 
+function useActiveCardSize(card: Pick<SiteCard, 'size'>) {
+  const breakpoint = useSiteBreakpoint();
+  return card.size[breakpoint];
+}
+
 function CardShell({
   children,
   className,
@@ -169,7 +174,7 @@ function CardShell({
   return (
     <div
       className={cn(
-        'group relative z-0 h-full w-full select-none overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-border/80 hover:shadow-md',
+        'group hover:-translate-y-0.5 relative z-0 h-full w-full select-none overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-200 hover:border-border/80 hover:shadow-md',
         className
       )}
     >
@@ -233,30 +238,18 @@ function PagedRows<T>({
   mobileItemsPerPage?: number;
   desktopItemsPerPage?: number;
 }) {
-  const [isDesktop, setIsDesktop] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') {
-      return;
-    }
-
-    const mediaQuery = window.matchMedia('(min-width: 600px)');
-    const updateViewport = () => setIsDesktop(mediaQuery.matches);
-
-    updateViewport();
-    mediaQuery.addEventListener('change', updateViewport);
-
-    return () => {
-      mediaQuery.removeEventListener('change', updateViewport);
-    };
-  }, []);
-
-  const itemsPerPage = isDesktop ? desktopItemsPerPage : mobileItemsPerPage;
+  const breakpoint = useSiteBreakpoint();
+  const itemsPerPage =
+    breakpoint === 'md' ? desktopItemsPerPage : mobileItemsPerPage;
   const pages = useMemo(
     () => chunkItems(items, itemsPerPage),
     [items, itemsPerPage]
   );
   const [currentPage, setCurrentPage] = useState(0);
+
+  useEffect(() => {
+    setCurrentPage((page) => Math.min(page, Math.max(pages.length - 1, 0)));
+  }, [pages.length]);
 
   useEffect(() => {
     if (currentPage >= pages.length) {
@@ -451,7 +444,11 @@ function getLinkTitle(url: string, label?: string, previewTitle?: string) {
   }
 }
 
-function getLinkDescription(url: string, description?: string, previewDescription?: string) {
+function getLinkDescription(
+  url: string,
+  description?: string,
+  previewDescription?: string
+) {
   if (description) {
     return description;
   }
@@ -551,7 +548,7 @@ function LinkCard({
     card.description,
     preview?.description
   );
-  const mdSize = card.size.md;
+  const activeSize = useActiveCardSize(card);
   const isWebsite = key === 'website';
   const hostname = getDisplayHostname(card.href);
 
@@ -578,7 +575,9 @@ function LinkCard({
 
             <div className="space-y-1">
               <p className="font-cal text-sm leading-tight">{title}</p>
-              <p className="truncate text-muted-foreground text-xs">{hostname}</p>
+              <p className="truncate text-muted-foreground text-xs">
+                {hostname}
+              </p>
               <p className="line-clamp-3 text-muted-foreground text-xs">
                 {description}
               </p>
@@ -589,7 +588,7 @@ function LinkCard({
     );
   }
 
-  if (mdSize === '4x1') {
+  if (activeSize === '4x1') {
     return (
       <a
         href={card.href}
@@ -617,7 +616,7 @@ function LinkCard({
     );
   }
 
-  if (mdSize === '4x2') {
+  if (activeSize === '4x2') {
     const image = preview?.image;
     if ((!platform || isWebsite) && image) {
       return (
@@ -640,11 +639,7 @@ function LinkCard({
                 </p>
               </div>
               <div>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="rounded-full"
-                >
+                <Button size="sm" variant="outline" className="rounded-full">
                   {platform?.actionLabel ?? 'Visit'}
                 </Button>
               </div>
@@ -666,7 +661,12 @@ function LinkCard({
         onClick={() => trackCardClick(card.id, card.href)}
       >
         <CardShell className="flex overflow-hidden">
-          <div className={cn('flex w-35 shrink-0 items-center justify-center', platform?.bg ?? 'bg-muted/50')}>
+          <div
+            className={cn(
+              'flex w-35 shrink-0 items-center justify-center',
+              platform?.bg ?? 'bg-muted/50'
+            )}
+          >
             <PlatformIcon href={card.href} large />
           </div>
           <div className="flex flex-1 flex-col justify-center gap-2 p-5">
@@ -702,7 +702,9 @@ function LinkCard({
         </div>
         <div className="mt-auto space-y-1">
           <p className="font-cal text-sm leading-tight">{title}</p>
-          <p className="truncate text-muted-foreground text-xs">{description}</p>
+          <p className="truncate text-muted-foreground text-xs">
+            {description}
+          </p>
           <div className="pt-1">
             <Button
               size="sm"
@@ -722,7 +724,7 @@ function NoteCard({ card }: { card: Extract<SiteCard, { type: 'note' }> }) {
     <CardShell className="flex h-full w-full flex-col p-5">
       <div
         className={cn(
-          'prose prose-sm h-full w-full max-w-none overflow-hidden dark:prose-invert prose-headings:font-cal prose-headings:text-sm prose-p:m-0 prose-p:text-xs prose-code:rounded prose-code:bg-muted prose-code:px-1 prose-code:py-0.5'
+          'prose prose-sm dark:prose-invert prose-p:m-0 h-full w-full max-w-none overflow-hidden prose-code:rounded prose-code:bg-muted prose-code:px-1 prose-code:py-0.5 prose-headings:font-cal prose-headings:text-sm prose-p:text-xs'
         )}
         // biome-ignore lint/security/noDangerouslySetInnerHtml: trusted local config content
         dangerouslySetInnerHTML={{ __html: card.html }}
@@ -961,10 +963,10 @@ function useGitHubStats(username: string) {
 
 function GitHubCard({ card }: { card: SiteGitHubCard }) {
   const stats = useGitHubStats(card.username);
-  const mdSize = card.size.md;
+  const activeSize = useActiveCardSize(card);
 
   const body =
-    mdSize === '4x4' ? (
+    activeSize === '4x4' ? (
       <div className="flex h-full w-full flex-col overflow-hidden rounded-2xl p-5">
         <div className="flex items-center gap-4">
           {stats?.avatar ? (
@@ -1024,7 +1026,7 @@ function GitHubCard({ card }: { card: SiteGitHubCard }) {
           />
         </div>
       </div>
-    ) : mdSize === '4x2' ? (
+    ) : activeSize === '4x2' ? (
       <div className="flex h-full w-full items-stretch overflow-hidden rounded-2xl">
         <div className="flex flex-1 flex-col justify-between p-5">
           <div className="flex items-center gap-3">
@@ -1102,7 +1104,11 @@ function GitHubCard({ card }: { card: SiteGitHubCard }) {
       className="block h-full w-full text-left"
       onClick={() => {
         trackCardClick(card.id, `https://github.com/${card.username}`);
-        window.open(`https://github.com/${card.username}`, '_blank', 'noopener,noreferrer');
+        window.open(
+          `https://github.com/${card.username}`,
+          '_blank',
+          'noopener,noreferrer'
+        );
       }}
     >
       <CardShell>{body}</CardShell>
@@ -1115,7 +1121,7 @@ function SubscribeCard({ card }: { card: SiteEmailCollectCard }) {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const compact = card.size.md === '2x2';
+  const compact = useActiveCardSize(card) === '2x2';
 
   const heading = card.heading ?? 'Stay in touch';
   const description =
@@ -1152,21 +1158,25 @@ function SubscribeCard({ card }: { card: SiteEmailCollectCard }) {
           <Mail className="h-5 w-5" />
         </div>
         <p className="font-cal text-sm">You&apos;re subscribed</p>
-        <p className="text-muted-foreground text-xs">
-          Thanks for signing up.
-        </p>
+        <p className="text-muted-foreground text-xs">Thanks for signing up.</p>
       </CardShell>
     );
   }
 
   return (
-    <CardShell className={compact ? 'flex flex-col p-5' : 'flex flex-col justify-center gap-3 p-6'}>
+    <CardShell
+      className={
+        compact ? 'flex flex-col p-5' : 'flex flex-col justify-center gap-3 p-6'
+      }
+    >
       <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-border/60 bg-muted/50">
         <Mail className="h-5 w-5 text-foreground" />
       </div>
       <div className={compact ? 'mt-auto space-y-2' : 'space-y-1'}>
         <p className="font-cal text-sm leading-tight">{heading}</p>
-        {!compact && <p className="text-muted-foreground text-xs">{description}</p>}
+        {!compact && (
+          <p className="text-muted-foreground text-xs">{description}</p>
+        )}
       </div>
       <form className="flex gap-2" onSubmit={handleSubmit}>
         <Input
@@ -1187,7 +1197,7 @@ function SubscribeCard({ card }: { card: SiteEmailCollectCard }) {
       </form>
       {error && <p className="text-destructive text-xs">{error}</p>}
       {compact && (
-        <p className="text-muted-foreground text-[11px]">{description}</p>
+        <p className="text-[11px] text-muted-foreground">{description}</p>
       )}
     </CardShell>
   );
@@ -1235,7 +1245,9 @@ function getTimeLeft(targetDate: string, repeat = 'none') {
 }
 
 function useCountdown(targetDate: string, repeat = 'none') {
-  const [timeLeft, setTimeLeft] = useState(() => getTimeLeft(targetDate, repeat));
+  const [timeLeft, setTimeLeft] = useState(() =>
+    getTimeLeft(targetDate, repeat)
+  );
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -1249,9 +1261,9 @@ function useCountdown(targetDate: string, repeat = 'none') {
 
 function CountdownCard({ card }: { card: SiteCountdownCard }) {
   const timeLeft = useCountdown(card.targetDate, card.repeat);
-  const mdSize = card.size.md;
+  const activeSize = useActiveCardSize(card);
 
-  if (mdSize === '4x4') {
+  if (activeSize === '4x4') {
     return (
       <CardShell className="flex h-full w-full flex-col items-center justify-center gap-5 p-6 text-center">
         {card.emoji && <span className="text-4xl">{card.emoji}</span>}
@@ -1273,7 +1285,7 @@ function CountdownCard({ card }: { card: SiteCountdownCard }) {
                 <span className="font-cal text-2xl tabular-nums">
                   {String(value).padStart(2, '0')}
                 </span>
-                <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
                   {label}
                 </span>
               </div>
@@ -1284,7 +1296,7 @@ function CountdownCard({ card }: { card: SiteCountdownCard }) {
     );
   }
 
-  if (mdSize === '4x2') {
+  if (activeSize === '4x2') {
     return (
       <CardShell className="flex h-full w-full flex-col justify-center gap-4 p-6">
         <div className="flex items-center gap-2">
@@ -1305,7 +1317,7 @@ function CountdownCard({ card }: { card: SiteCountdownCard }) {
                 <span className="font-cal text-3xl tabular-nums">
                   {String(value).padStart(2, '0')}
                 </span>
-                <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
                   {label}
                 </span>
               </div>
@@ -1319,7 +1331,9 @@ function CountdownCard({ card }: { card: SiteCountdownCard }) {
   return (
     <CardShell className="flex h-full w-full flex-col items-center justify-center gap-3 p-4 text-center">
       {card.emoji && <span className="text-2xl">{card.emoji}</span>}
-      {card.title && <p className="font-cal text-xs leading-tight">{card.title}</p>}
+      {card.title && (
+        <p className="font-cal text-xs leading-tight">{card.title}</p>
+      )}
       {timeLeft.isPast ? (
         <p className="font-cal text-primary text-sm">Time&apos;s up!</p>
       ) : (
@@ -1331,13 +1345,15 @@ function CountdownCard({ card }: { card: SiteCountdownCard }) {
           ].map(([label, value], index) => (
             <div key={label} className="flex items-center gap-3">
               {index > 0 && (
-                <span className="font-cal text-xl text-muted-foreground">:</span>
+                <span className="font-cal text-muted-foreground text-xl">
+                  :
+                </span>
               )}
               <div className="flex flex-col items-center">
                 <span className="font-cal text-2xl tabular-nums">
                   {String(value).padStart(2, '0')}
                 </span>
-                <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
                   {label}
                 </span>
               </div>
@@ -1434,6 +1450,7 @@ function WeatherCard({ card }: { card: SiteWeatherCard }) {
   const weather = useWeatherData(card.latitude, card.longitude);
   const name = useReverseGeocode(card.latitude, card.longitude);
   const locationName = card.locationName || name;
+  const activeSize = useActiveCardSize(card);
 
   if (!weather) {
     return (
@@ -1443,7 +1460,7 @@ function WeatherCard({ card }: { card: SiteWeatherCard }) {
     );
   }
 
-  if (card.size.md === '4x2') {
+  if (activeSize === '4x2') {
     return (
       <CardShell className="flex h-full w-full items-center gap-6 p-6">
         <div className="flex items-center gap-4">
@@ -1506,7 +1523,12 @@ function useTweet(tweetId: string) {
     )
       .then((response) => response.json())
       .then((raw) => {
-        if (cancelled || !raw || raw.__typename === 'TweetTombstone' || !raw.user) {
+        if (
+          cancelled ||
+          !raw ||
+          raw.__typename === 'TweetTombstone' ||
+          !raw.user
+        ) {
           return;
         }
 
@@ -1547,7 +1569,7 @@ function useTweet(tweetId: string) {
 
 function TwitterCard({ card }: { card: SiteTwitterCard }) {
   const tweet = useTweet(card.tweetId);
-  const mdSize = card.size.md;
+  const activeSize = useActiveCardSize(card);
 
   if (!tweet) {
     return (
@@ -1559,7 +1581,7 @@ function TwitterCard({ card }: { card: SiteTwitterCard }) {
   }
 
   const content =
-    mdSize === '4x4' ? (
+    activeSize === '4x4' ? (
       <div className="flex h-full w-full flex-col p-5">
         <div className="flex items-center gap-3">
           <Image
@@ -1611,7 +1633,7 @@ function TwitterCard({ card }: { card: SiteTwitterCard }) {
           <span>{formatTweetDate(tweet.createdAt)}</span>
         </div>
       </div>
-    ) : mdSize === '4x2' ? (
+    ) : activeSize === '4x2' ? (
       <div className="flex h-full w-full flex-col justify-between p-5">
         <div className="flex items-center gap-2.5">
           <Image
@@ -1758,7 +1780,7 @@ function MusicCard({
   metadata?: MusicMetadata | null;
 }) {
   const { metadata, loading } = useMusicMetadata(card.url, initialMetadata);
-  const compact = card.size.md === '2x2';
+  const compact = useActiveCardSize(card) === '2x2';
 
   if (loading) {
     return (
@@ -1816,13 +1838,13 @@ function MusicCard({
             {metadata.title}
           </p>
           {metadata.artist && (
-            <p className="mt-0.5 truncate text-xs text-white/70">
+            <p className="mt-0.5 truncate text-white/70 text-xs">
               {metadata.artist}
             </p>
           )}
           <div className="mt-2 flex items-center gap-1.5">
             <MusicProviderIcon provider={metadata.provider} />
-            <span className="text-xs text-white/50">
+            <span className="text-white/50 text-xs">
               {metadata.provider === 'spotify' ? 'Spotify' : 'Apple Music'}
             </span>
           </div>
@@ -1859,8 +1881,9 @@ function MusicCard({
           )}
           <div className="mt-3 flex items-center gap-2">
             <MusicProviderIcon provider={metadata.provider} />
-            <span className="text-xs text-white/50">
-              Listen on {metadata.provider === 'spotify' ? 'Spotify' : 'Apple Music'}
+            <span className="text-white/50 text-xs">
+              Listen on{' '}
+              {metadata.provider === 'spotify' ? 'Spotify' : 'Apple Music'}
             </span>
           </div>
         </div>
@@ -1898,7 +1921,9 @@ function PodcastsCard({ card }: { card: SitePodcastsCard }) {
           {card.title ?? 'Podcasts'}
         </p>
         {card.description && (
-          <p className="text-[11px] text-muted-foreground md:text-xs">{card.description}</p>
+          <p className="text-[11px] text-muted-foreground md:text-xs">
+            {card.description}
+          </p>
         )}
       </div>
 
@@ -1925,7 +1950,7 @@ function PodcastsCard({ card }: { card: SitePodcastsCard }) {
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-[13px] font-medium leading-tight md:text-sm">
+                  <p className="truncate font-medium text-[13px] leading-tight md:text-sm">
                     {item.title}
                   </p>
                   {item.publisher && (
@@ -1958,10 +1983,10 @@ function PodcastsCard({ card }: { card: SitePodcastsCard }) {
           }}
         />
       ) : (
-        <div className="mt-4 flex flex-1 items-center justify-center rounded-2xl border border-dashed border-border/70 bg-muted/20 px-4 text-center">
-          <p className="text-sm text-muted-foreground">
+        <div className="mt-4 flex flex-1 items-center justify-center rounded-2xl border border-border/70 border-dashed bg-muted/20 px-4 text-center">
+          <p className="text-muted-foreground text-sm">
             Add podcast channels in{' '}
-            <code className="rounded bg-muted px-1 py-0.5 text-xs text-foreground">
+            <code className="rounded bg-muted px-1 py-0.5 text-foreground text-xs">
               src/content/site.ts
             </code>
           </p>
@@ -1994,7 +2019,9 @@ function YouTubeChannelsCard({
           {card.title ?? 'YouTube channels'}
         </p>
         {card.description && (
-          <p className="text-[11px] text-muted-foreground md:text-xs">{card.description}</p>
+          <p className="text-[11px] text-muted-foreground md:text-xs">
+            {card.description}
+          </p>
         )}
       </div>
 
@@ -2031,7 +2058,9 @@ function YouTubeChannelsCard({
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-[13px] font-medium leading-tight md:text-sm">{title}</p>
+                  <p className="truncate font-medium text-[13px] leading-tight md:text-sm">
+                    {title}
+                  </p>
                 </div>
                 <ExternalLink className="h-3.5 w-3.5 shrink-0 text-muted-foreground md:h-4 md:w-4" />
               </div>
@@ -2062,9 +2091,13 @@ function BooksCard({
       </div>
 
       <div className="mt-1 space-y-0.5 md:mt-1.5 md:space-y-1">
-        <p className="font-cal text-[15px] leading-tight md:text-base">{card.title ?? 'Books'}</p>
+        <p className="font-cal text-[15px] leading-tight md:text-base">
+          {card.title ?? 'Books'}
+        </p>
         {card.description && (
-          <p className="text-[11px] text-muted-foreground md:text-xs">{card.description}</p>
+          <p className="text-[11px] text-muted-foreground md:text-xs">
+            {card.description}
+          </p>
         )}
       </div>
 
@@ -2102,7 +2135,7 @@ function BooksCard({
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-[13px] font-medium leading-tight md:text-sm">
+                  <p className="truncate font-medium text-[13px] leading-tight md:text-sm">
                     {title}
                   </p>
                   {subtitle && (
@@ -2138,7 +2171,9 @@ function FavoritesCard({ card }: { card: SiteFavoritesCard }) {
           {card.title ?? 'Favorites'}
         </p>
         {card.description && (
-          <p className="text-[11px] text-muted-foreground md:text-xs">{card.description}</p>
+          <p className="text-[11px] text-muted-foreground md:text-xs">
+            {card.description}
+          </p>
         )}
       </div>
 
@@ -2171,7 +2206,7 @@ function FavoritesCard({ card }: { card: SiteFavoritesCard }) {
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-[13px] font-medium leading-tight md:text-sm">
+                  <p className="truncate font-medium text-[13px] leading-tight md:text-sm">
                     {item.title}
                   </p>
                   {item.tagline && (
@@ -2207,6 +2242,7 @@ function getCalendarEmbedUrl(url: string) {
 
 function CalendarCard({ card }: { card: SiteCalendarCard }) {
   const [open, setOpen] = useState(false);
+  const activeSize = useActiveCardSize(card);
   const provider = useMemo(() => {
     try {
       const hostname = new URL(card.url).hostname;
@@ -2237,7 +2273,13 @@ function CalendarCard({ card }: { card: SiteCalendarCard }) {
           }
         }}
       >
-        <CardShell className={card.size.md === '2x2' ? 'flex h-full w-full flex-col p-5' : 'flex h-full w-full flex-col p-6'}>
+        <CardShell
+          className={
+            activeSize === '2x2'
+              ? 'flex h-full w-full flex-col p-5'
+              : 'flex h-full w-full flex-col p-6'
+          }
+        >
           <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-border/60 bg-muted/50">
             <Calendar className="h-5 w-5 text-foreground" />
           </div>
@@ -2248,7 +2290,9 @@ function CalendarCard({ card }: { card: SiteCalendarCard }) {
             <p className="text-muted-foreground text-xs">
               {card.description || 'Schedule a meeting with me'}
             </p>
-            <div className="pt-2 text-xs text-muted-foreground">via {provider}</div>
+            <div className="pt-2 text-muted-foreground text-xs">
+              via {provider}
+            </div>
           </div>
         </CardShell>
       </button>
@@ -2280,7 +2324,7 @@ function ViewsCard({
   card: SiteViewsCard;
   summary: SiteMetricsSummary;
 }) {
-  if (card.size.md === '4x1') {
+  if (useActiveCardSize(card) === '4x1') {
     return (
       <CardShell className="flex h-full w-full items-center justify-center gap-3 px-6">
         <Eye size={18} className="shrink-0 text-muted-foreground" />
@@ -2355,10 +2399,7 @@ export default function SiteCardView({
       return <PodcastsCard card={card} />;
     case 'youtube-channels':
       return (
-        <YouTubeChannelsCard
-          card={card}
-          metadataMap={youtubeChannelMetadata}
-        />
+        <YouTubeChannelsCard card={card} metadataMap={youtubeChannelMetadata} />
       );
     case 'books':
       return <BooksCard card={card} metadataMap={bookMetadata} />;

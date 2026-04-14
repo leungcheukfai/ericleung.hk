@@ -3,6 +3,7 @@ import { UAParser } from 'ua-parser-js';
 import { and, count, countDistinct, desc, eq, gte, sql } from 'drizzle-orm';
 import { db } from './db/db';
 import { siteClick, siteSubscriber, siteView } from './db/schema';
+import { getSiteCards } from './site-content';
 
 export type RequestMeta = {
   ip: string;
@@ -137,6 +138,7 @@ export async function getSiteTrafficSeries(days: number) {
 }
 
 export async function getTopCards(days: number) {
+  const cards = await getSiteCards();
   const rows = await db
     .select({
       cardId: siteClick.cardId,
@@ -150,7 +152,7 @@ export async function getTopCards(days: number) {
     .limit(10);
 
   return rows.map((row) => {
-    const card = siteConfig.cards.find((candidate) => candidate.id === row.cardId);
+    const card = cards.find((candidate) => candidate.id === row.cardId);
     return {
       cardId: row.cardId,
       href: row.href,

@@ -1,9 +1,14 @@
+import AdminCardsEditor from '@/components/admin/cards-editor';
 import TrafficChart from '@/components/site/traffic-chart';
+import { siteConfig } from '@/content/site';
 import {
   adminSessionCookie,
   isAdminAuthenticated,
   isAdminConfigured,
 } from '@/lib/admin-auth';
+import { getBookMetadataMap } from '@/server/book-metadata';
+import { getLinkPreviews } from '@/server/link-previews';
+import { getMusicMetadataMap } from '@/server/music-metadata';
 import {
   getDeviceBreakdown,
   getGeoBreakdown,
@@ -13,6 +18,8 @@ import {
   getTopCards,
   getTopReferrers,
 } from '@/server/site-analytics';
+import { getSiteCards } from '@/server/site-content';
+import { getYouTubeChannelMetadataMap } from '@/server/youtube-channel-metadata';
 import { LockKeyhole, LogOut } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -58,7 +65,10 @@ function TableCard({
           <tbody>
             {rows.length > 0 ? (
               rows.map((row) => (
-                <tr key={row.join(':')} className="border-border/40 border-b last:border-0">
+                <tr
+                  key={row.join(':')}
+                  className="border-border/40 border-b last:border-0"
+                >
                   {row.map((cell) => (
                     <td key={cell} className="px-0 py-3 pr-4 align-top">
                       {cell}
@@ -103,11 +113,11 @@ export default async function AdminPage({
             <h1 className="mt-5 font-cal text-3xl">Admin</h1>
             <p className="mt-2 text-muted-foreground text-sm">
               Private admin is not configured. Set{' '}
-              <code className="rounded bg-muted px-1 py-0.5 text-xs text-foreground">
+              <code className="rounded bg-muted px-1 py-0.5 text-foreground text-xs">
                 SITE_ADMIN_PASSWORD
               </code>{' '}
               and{' '}
-              <code className="rounded bg-muted px-1 py-0.5 text-xs text-foreground">
+              <code className="rounded bg-muted px-1 py-0.5 text-foreground text-xs">
                 ADMIN_SESSION_SECRET
               </code>{' '}
               (32+ characters) in your deployment environment, then redeploy.
@@ -158,16 +168,32 @@ export default async function AdminPage({
     );
   }
 
-  const [summary, traffic, topCards, referrers, deviceBreakdown, geo, subscribers] =
-    await Promise.all([
-      getPublicSiteSummary(),
-      getSiteTrafficSeries(30),
-      getTopCards(30),
-      getTopReferrers(30),
-      getDeviceBreakdown(30),
-      getGeoBreakdown(30),
-      getSiteSubscribers(),
-    ]);
+  const cards = await getSiteCards();
+  const [
+    summary,
+    traffic,
+    topCards,
+    referrers,
+    deviceBreakdown,
+    geo,
+    subscribers,
+    previews,
+    musicMetadataMap,
+    youtubeChannelMetadataMap,
+    bookMetadataMap,
+  ] = await Promise.all([
+    getPublicSiteSummary(),
+    getSiteTrafficSeries(30),
+    getTopCards(30),
+    getTopReferrers(30),
+    getDeviceBreakdown(30),
+    getGeoBreakdown(30),
+    getSiteSubscribers(),
+    getLinkPreviews(cards),
+    getMusicMetadataMap(cards),
+    getYouTubeChannelMetadataMap(cards),
+    getBookMetadataMap(cards),
+  ]);
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-8 px-5 py-10 md:px-8 md:py-14">
@@ -182,14 +208,14 @@ export default async function AdminPage({
         <div className="flex flex-wrap items-center gap-3">
           <a
             href="/admin/subscribers.csv"
-            className="inline-flex h-10 items-center justify-center rounded-full border border-border/60 bg-card px-4 text-sm shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+            className="hover:-translate-y-0.5 inline-flex h-10 items-center justify-center rounded-full border border-border/60 bg-card px-4 text-sm shadow-sm transition hover:shadow-md"
           >
             Export subscribers CSV
           </a>
           <form action="/admin/logout" method="post">
             <button
               type="submit"
-              className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-border/60 bg-card px-4 text-sm shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+              className="hover:-translate-y-0.5 inline-flex h-10 items-center justify-center gap-2 rounded-full border border-border/60 bg-card px-4 text-sm shadow-sm transition hover:shadow-md"
             >
               <LogOut className="h-4 w-4" />
               Log out
@@ -235,7 +261,11 @@ export default async function AdminPage({
         <TableCard
           title="Top cards"
           columns={['Card', 'Destination', 'Clicks']}
-          rows={topCards.map((row) => [row.label, row.href, row.count.toString()])}
+          rows={topCards.map((row) => [
+            row.label,
+            row.href,
+            row.count.toString(),
+          ])}
         />
         <TableCard
           title="Top referrers"
@@ -272,6 +302,17 @@ export default async function AdminPage({
           ])}
         />
       </section>
+
+      <AdminCardsEditor
+        initialCards={cards}
+        summary={summary}
+        previews={previews}
+        musicMetadataMap={musicMetadataMap}
+        youtubeChannelMetadataMap={youtubeChannelMetadataMap}
+        bookMetadataMap={bookMetadataMap}
+        profileName={siteConfig.profile.name}
+        profileAvatar={siteConfig.profile.avatar}
+      />
     </main>
   );
 }
