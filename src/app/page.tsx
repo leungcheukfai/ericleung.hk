@@ -3,7 +3,7 @@ import {
   ogMetadata,
   twitterMetadata,
 } from '@/app/shared-metadata';
-import SiteGridShell from '@/components/site/grid-shell';
+import SiteBentoGrid from '@/components/site/bento-grid';
 import SiteHeader from '@/components/site/header';
 import SiteThemeWrapper from '@/components/site/theme-wrapper';
 import SiteViewTracker from '@/components/site/view-tracker';
@@ -11,8 +11,8 @@ import { siteConfig } from '@/content/site';
 import { getBookMetadataMap } from '@/server/book-metadata';
 import { getLinkPreviews } from '@/server/link-previews';
 import { getMusicMetadataMap } from '@/server/music-metadata';
-import { getSiteCards } from '@/server/site-content';
 import { getPublicSiteSummary } from '@/server/site-analytics';
+import { getSiteCards } from '@/server/site-content';
 import { getYouTubeChannelMetadataMap } from '@/server/youtube-channel-metadata';
 import type { Metadata } from 'next';
 
@@ -47,14 +47,13 @@ export default async function HomePage() {
     musicMetadataMap,
     youtubeChannelMetadataMap,
     bookMetadataMap,
-  ] =
-    await Promise.all([
-      needsSummary ? getPublicSiteSummary() : Promise.resolve(EMPTY_SUMMARY),
-      getLinkPreviews(cards),
-      getMusicMetadataMap(cards),
-      getYouTubeChannelMetadataMap(cards),
-      getBookMetadataMap(cards),
-    ]);
+  ] = await Promise.all([
+    needsSummary ? getPublicSiteSummary() : Promise.resolve(EMPTY_SUMMARY),
+    getLinkPreviews(cards),
+    getMusicMetadataMap(cards),
+    getYouTubeChannelMetadataMap(cards),
+    getBookMetadataMap(cards),
+  ]);
 
   return (
     <SiteThemeWrapper
@@ -71,7 +70,7 @@ export default async function HomePage() {
               <SiteHeader />
             </div>
 
-            <SiteGridShell
+            <SiteBentoGrid
               cards={cards}
               summary={summary}
               previews={previews}
@@ -109,6 +108,18 @@ export default async function HomePage() {
                     rel="noreferrer"
                   >
                     {siteConfig.footer.licenseLabel}
+                  </a>
+                  <a
+                    className="font-medium text-foreground underline underline-offset-4 transition-opacity hover:opacity-70"
+                    href="/legal/privacy"
+                  >
+                    Privacy Policy
+                  </a>
+                  <a
+                    className="font-medium text-foreground underline underline-offset-4 transition-opacity hover:opacity-70"
+                    href="/legal/terms"
+                  >
+                    Terms of Service
                   </a>
                 </div>
               </div>
