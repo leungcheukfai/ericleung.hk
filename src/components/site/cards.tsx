@@ -102,6 +102,14 @@ type WeatherData = {
 };
 
 const TWEET_URL_RE = /(?:twitter\.com|x\.com)\/\w+\/status\/(\d+)/;
+const MAP_ROAD_DECORATIONS = [
+  { left: '6%', top: '18%', width: '54%', rotate: '18deg' },
+  { left: '42%', top: '8%', width: '44%', rotate: '-26deg' },
+  { left: '14%', top: '58%', width: '48%', rotate: '-12deg' },
+  { left: '54%', top: '62%', width: '34%', rotate: '21deg' },
+  { left: '8%', top: '76%', width: '26%', rotate: '0deg' },
+  { left: '72%', top: '30%', width: '18%', rotate: '90deg' },
+] as const;
 
 function trackCardClick(cardId: string, href: string) {
   const payload = JSON.stringify({ cardId, href });
@@ -494,9 +502,23 @@ function FaviconIcon({
 }) {
   const favicon = getFaviconUrl(href);
   const size = large ? 36 : 24;
+  const [hasError, setHasError] = useState(false);
 
-  if (!favicon) {
-    return <Globe size={large ? 32 : 20} className="text-foreground" />;
+  useEffect(() => {
+    setHasError(false);
+  }, [favicon]);
+
+  if (!favicon || hasError) {
+    return (
+      <div
+        className={cn(
+          'flex items-center justify-center rounded-lg bg-muted/70 text-muted-foreground',
+          large ? 'h-9 w-9 rounded-xl' : 'h-6 w-6 rounded-md'
+        )}
+      >
+        <Globe size={large ? 22 : 16} className="text-foreground/70" />
+      </div>
+    );
   }
 
   return (
@@ -509,6 +531,7 @@ function FaviconIcon({
         'object-contain',
         large ? 'h-9 w-9 rounded-xl' : 'h-6 w-6 rounded-md'
       )}
+      onError={() => setHasError(true)}
     />
   );
 }
@@ -770,38 +793,15 @@ function ImageCard({ card }: { card: SiteImageCard }) {
   );
 }
 
-function getTiles(lat: number, lng: number) {
-  const zoom = 15;
-  const xFloat = ((lng + 180) / 360) * 2 ** zoom;
-  const latRad = (lat * Math.PI) / 180;
-  const yFloat =
-    ((1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI) / 2) *
-    2 ** zoom;
-  const cx = Math.floor(xFloat);
-  const cy = Math.floor(yFloat);
-  const tiles: { url: string; dx: number; dy: number }[] = [];
-
-  for (let dy = -1; dy <= 1; dy++) {
-    for (let dx = -1; dx <= 1; dx++) {
-      tiles.push({
-        url: `https://a.basemaps.cartocdn.com/dark_all/${zoom}/${cx + dx}/${cy + dy}@2x.png`,
-        dx,
-        dy,
-      });
-    }
-  }
-
-  return {
-    tiles,
-    offsetX: (xFloat - cx) * 256,
-    offsetY: (yFloat - cy) * 256,
-  };
-}
-
-function useReverseGeocode(lat: number, lng: number) {
+function useReverseGeocode(lat: number, lng: number, enabled = true) {
   const [placeName, setPlaceName] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!enabled) {
+      setPlaceName(null);
+      return;
+    }
+
     let cancelled = false;
     void fetch(
       `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&zoom=14`
@@ -829,7 +829,7 @@ function useReverseGeocode(lat: number, lng: number) {
     return () => {
       cancelled = true;
     };
-  }, [lat, lng]);
+  }, [enabled, lat, lng]);
 
   return placeName;
 }
@@ -843,46 +843,47 @@ function MapCard({
   profileName: string;
   profileAvatar?: string;
 }) {
-  const { tiles, offsetX, offsetY } = getTiles(card.latitude, card.longitude);
-  const geocodedName = useReverseGeocode(card.latitude, card.longitude);
+  const geocodedName = useReverseGeocode(
+    card.latitude,
+    card.longitude,
+    !card.label
+  );
   const label = card.label || geocodedName;
+  const coordinateLabel = `${Math.abs(card.latitude).toFixed(2)}°${card.latitude >= 0 ? 'N' : 'S'} · ${Math.abs(card.longitude).toFixed(2)}°${card.longitude >= 0 ? 'E' : 'W'}`;
 
   return (
-    <CardShell className="relative overflow-hidden bg-[#111827]">
+    <CardShell className="relative overflow-hidden bg-[#0f172a]">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(249,115,22,0.22),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(251,191,36,0.18),transparent_32%),linear-gradient(165deg,#0f172a_0%,#111827_48%,#020617_100%)]" />
       <div
-        className="absolute"
+        className="absolute inset-0 opacity-35"
         style={{
-          width: 256 * 3,
-          height: 256 * 3,
-          left: `calc(50% - ${offsetX + 256}px)`,
-          top: `calc(50% - ${offsetY + 256}px)`,
+          backgroundImage:
+            'linear-gradient(rgba(255,255,255,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.07) 1px, transparent 1px)',
+          backgroundSize: '56px 56px',
         }}
-      >
-        {tiles.map((tile) => (
-          <Image
-            key={`${tile.dx}-${tile.dy}`}
-            src={tile.url}
-            alt=""
-            width={256}
-            height={256}
-            className="absolute"
-            style={{
-              left: (tile.dx + 1) * 256,
-              top: (tile.dy + 1) * 256,
-            }}
-            unoptimized
-            draggable={false}
-          />
-        ))}
-      </div>
+      />
+      {MAP_ROAD_DECORATIONS.map((road) => (
+        <div
+          key={`${road.left}-${road.top}-${road.rotate}`}
+          className="absolute h-2 rounded-full bg-white/10"
+          style={{
+            left: road.left,
+            top: road.top,
+            width: road.width,
+            transform: `rotate(${road.rotate})`,
+            transformOrigin: 'left center',
+          }}
+        />
+      ))}
+      <div className="-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2 h-28 w-28 rounded-full bg-primary/15 blur-3xl" />
 
       <div className="-translate-x-1/2 -translate-y-full absolute top-1/2 left-1/2 z-10">
         <div className="flex flex-col items-center">
-          <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-[3px] border-white bg-primary shadow-[0_0_20px_rgba(15,118,110,0.45)]">
+          <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-[3px] border-white bg-primary shadow-[0_0_20px_rgba(249,115,22,0.38)]">
             {profileAvatar ? (
               <Image
                 src={profileAvatar}
-                alt={profileName}
+                alt=""
                 width={40}
                 height={40}
                 className="h-full w-full object-cover"
@@ -906,9 +907,12 @@ function MapCard({
 
       {label && (
         <div className="absolute inset-x-0 bottom-0 z-10 bg-linear-to-t from-black/80 via-black/30 to-transparent px-4 pt-8 pb-3">
-          <div className="flex items-center gap-1.5">
-            <MapPin className="h-3.5 w-3.5 shrink-0 text-primary" />
-            <p className="truncate font-medium text-sm text-white">{label}</p>
+          <div className="space-y-1">
+            <div className="flex items-center gap-1.5">
+              <MapPin className="h-3.5 w-3.5 shrink-0 text-primary" />
+              <p className="truncate font-medium text-sm text-white">{label}</p>
+            </div>
+            <p className="text-white/65 text-[11px]">{coordinateLabel}</p>
           </div>
         </div>
       )}
@@ -972,7 +976,7 @@ function GitHubCard({ card }: { card: SiteGitHubCard }) {
           {stats?.avatar ? (
             <Image
               src={stats.avatar}
-              alt={card.username}
+              alt=""
               width={56}
               height={56}
               className="rounded-full border-2 border-border/60"
@@ -1033,7 +1037,7 @@ function GitHubCard({ card }: { card: SiteGitHubCard }) {
             {stats?.avatar ? (
               <Image
                 src={stats.avatar}
-                alt={card.username}
+                alt=""
                 width={40}
                 height={40}
                 className="rounded-full border border-border/60"
@@ -1067,7 +1071,7 @@ function GitHubCard({ card }: { card: SiteGitHubCard }) {
         {stats?.avatar ? (
           <Image
             src={stats.avatar}
-            alt={card.username}
+            alt=""
             width={48}
             height={48}
             className="rounded-full border-2 border-border/60"
@@ -1586,7 +1590,7 @@ function TwitterCard({ card }: { card: SiteTwitterCard }) {
         <div className="flex items-center gap-3">
           <Image
             src={tweet.user.profileImageUrl}
-            alt={tweet.user.name}
+            alt=""
             width={40}
             height={40}
             className="rounded-full"
@@ -1638,7 +1642,7 @@ function TwitterCard({ card }: { card: SiteTwitterCard }) {
         <div className="flex items-center gap-2.5">
           <Image
             src={tweet.user.profileImageUrl}
-            alt={tweet.user.name}
+            alt=""
             width={32}
             height={32}
             className="rounded-full"
@@ -1675,7 +1679,7 @@ function TwitterCard({ card }: { card: SiteTwitterCard }) {
         <div className="flex items-center gap-2.5">
           <Image
             src={tweet.user.profileImageUrl}
-            alt={tweet.user.name}
+            alt=""
             width={28}
             height={28}
             className="rounded-full"
@@ -1814,23 +1818,25 @@ function MusicCard({
     );
   }
 
+  const coverArtSizes = compact ? '80px' : '(max-width: 767px) 120px, 140px';
+  const backgroundClass =
+    metadata.provider === 'spotify'
+      ? 'bg-[radial-gradient(circle_at_top_left,rgba(74,222,128,0.22),transparent_35%),linear-gradient(145deg,#14532d_0%,#1f2937_42%,#030712_100%)]'
+      : 'bg-[radial-gradient(circle_at_top_left,rgba(244,114,182,0.18),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(251,191,36,0.14),transparent_34%),linear-gradient(145deg,#57534e_0%,#3f3f46_42%,#111827_100%)]';
+
   const content = compact ? (
     <div className="relative flex h-full w-full overflow-hidden rounded-2xl">
-      <div className="absolute inset-0">
-        <Image
-          src={metadata.artwork}
-          alt=""
-          fill
-          className="object-cover blur-2xl brightness-50 saturate-150"
-          sizes="200px"
-        />
-      </div>
+      <div className={cn('absolute inset-0', backgroundClass)} />
+      <div className="absolute inset-0 bg-linear-to-r from-white/10 via-transparent to-black/10" />
       <div className="relative flex h-full w-full items-center gap-3 p-4">
         <Image
           src={metadata.artwork}
-          alt={metadata.title}
+          alt=""
           width={80}
           height={80}
+          priority
+          quality={70}
+          sizes={coverArtSizes}
           className="h-20 w-20 shrink-0 rounded-lg object-cover shadow-lg"
         />
         <div className="min-w-0 flex-1">
@@ -1853,21 +1859,17 @@ function MusicCard({
     </div>
   ) : (
     <div className="relative flex h-full w-full overflow-hidden rounded-2xl">
-      <div className="absolute inset-0">
-        <Image
-          src={metadata.artwork}
-          alt=""
-          fill
-          className="object-cover blur-3xl brightness-[0.35] saturate-150"
-          sizes="500px"
-        />
-      </div>
+      <div className={cn('absolute inset-0', backgroundClass)} />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_28%),linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.05)_100%)]" />
       <div className="relative flex h-full w-full items-center gap-5 p-5">
         <Image
           src={metadata.artwork}
-          alt={metadata.title}
+          alt=""
           width={140}
           height={140}
+          priority
+          quality={72}
+          sizes={coverArtSizes}
           className="h-full max-h-36 w-auto shrink-0 rounded-xl object-cover shadow-xl"
         />
         <div className="min-w-0 flex-1">
@@ -1938,7 +1940,7 @@ function PodcastsCard({ card }: { card: SitePodcastsCard }) {
                   {item.artwork ? (
                     <Image
                       src={item.artwork}
-                      alt={item.title}
+                      alt=""
                       fill
                       className="object-cover"
                       sizes="44px"
@@ -2046,7 +2048,7 @@ function YouTubeChannelsCard({
                   {artwork ? (
                     <Image
                       src={artwork}
-                      alt={title}
+                      alt=""
                       fill
                       className="object-cover"
                       sizes="44px"
@@ -2123,7 +2125,7 @@ function BooksCard({
                   {artwork ? (
                     <Image
                       src={artwork}
-                      alt={title}
+                      alt=""
                       fill
                       className="object-cover"
                       sizes="36px"

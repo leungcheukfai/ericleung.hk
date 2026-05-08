@@ -1,7 +1,6 @@
 'use client';
 
 import { siteConfig } from '@/content/site';
-import { cn } from '@/lib/utils';
 import { Check, ExternalLink, MapPin, Share2 } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -78,9 +77,11 @@ export default function SiteHeader() {
         {profile.avatar ? (
           <Image
             src={profile.avatar}
-            alt={profile.name}
+            alt=""
             width={100}
             height={100}
+            priority
+            sizes="100px"
             className="h-[100px] w-[100px] rounded-full object-cover"
           />
         ) : (
@@ -92,7 +93,11 @@ export default function SiteHeader() {
         <div className="flex flex-wrap items-center justify-end gap-2">
           <ShareButton />
           {profile.actions.map((action) => (
-            <HeaderButton key={action.href} href={action.href} label={action.label} />
+            <HeaderButton
+              key={action.href}
+              href={action.href}
+              label={action.label}
+            />
           ))}
         </div>
       </div>
