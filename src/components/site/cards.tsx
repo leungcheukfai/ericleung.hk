@@ -486,14 +486,19 @@ function getDisplayHostname(url: string) {
 
 function getFaviconUrl(url: string) {
   try {
-    const hostname = new URL(url).hostname;
+    const { hostname, origin } = new URL(url);
+
+    if (hostname === 'launch.unwire.hk') {
+      return `${origin}/favicon.ico`;
+    }
+
     return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(hostname)}&sz=128`;
   } catch {
     return null;
   }
 }
 
-function FaviconIcon({
+function FaviconImage({
   href,
   large,
 }: {
@@ -534,6 +539,16 @@ function FaviconIcon({
       onError={() => setHasError(true)}
     />
   );
+}
+
+function FaviconIcon({
+  href,
+  large,
+}: {
+  href: string;
+  large?: boolean;
+}) {
+  return <FaviconImage href={href} large={large} />;
 }
 
 function PlatformIcon({
@@ -2183,8 +2198,6 @@ function FavoritesCard({ card }: { card: SiteFavoritesCard }) {
         items={card.items}
         getKey={(item) => item.href}
         renderItem={(item) => {
-          const favicon = getFaviconUrl(item.href);
-
           return (
             <a
               href={item.href}
@@ -2195,17 +2208,7 @@ function FavoritesCard({ card }: { card: SiteFavoritesCard }) {
             >
               <div className="flex h-[58px] items-center gap-2 overflow-hidden rounded-xl border border-border/60 bg-background/70 px-2.5 py-1 transition-colors hover:bg-muted/30 md:h-16 md:gap-2.5 md:rounded-2xl md:px-3">
                 <div className="relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-border/60 bg-muted/50 md:h-10 md:w-10">
-                  {favicon ? (
-                    <Image
-                      src={favicon}
-                      alt=""
-                      width={24}
-                      height={24}
-                      className="h-6 w-6 object-contain"
-                    />
-                  ) : (
-                    <Globe className="h-4 w-4 text-muted-foreground" />
-                  )}
+                  <FaviconImage href={item.href} />
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-medium text-[13px] leading-tight md:text-sm">
