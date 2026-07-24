@@ -9,6 +9,11 @@ export const defaultMetadata = {
   title: TITLE,
   description: DESCRIPTION,
   metadataBase: new URL(SITE_URL),
+  alternates: {
+    types: {
+      'application/rss+xml': `${SITE_URL}/feed.xml`,
+    },
+  },
   authors: [{ name: siteConfig.profile.name, url: SITE_URL }],
   creator: siteConfig.profile.name,
   publisher: siteConfig.profile.name,

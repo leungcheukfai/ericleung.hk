@@ -197,8 +197,14 @@ export const siteConfig: SiteConfig = {
   domain: 'ericleung.hk',
   title: 'Eric Leung',
   description:
-    'Eric Leung is a Hong Kong-based builder exploring AI, emerging technology, smart home innovation, go-to-market strategy, and mindful living.',
-  keywords: ['Eric Leung', 'ericleung.hk', 'portfolio', 'personal website'],
+    'A Hong Kong-based builder exploring AI, emerging technology, smart home innovation, go-to-market strategy, and mindful living.',
+  keywords: [
+    'AI builder',
+    'Hong Kong',
+    'smart home innovation',
+    'go-to-market strategy',
+    'personal website',
+  ],
   theme: {
     preset: 'sunset',
     darkMode: false,
@@ -215,12 +221,14 @@ export const siteConfig: SiteConfig = {
     actions: [],
   },
   footer: {
-    notice: 'Based on OpenBio, modified by Eric Leung and available under AGPL-3.0.',
+    notice:
+      'Based on OpenBio, modified for this site and available under AGPL-3.0.',
     sourceHref: 'https://github.com/leungcheukfai/ericleung.hk',
     sourceLabel: 'Source code',
     upstreamHref: 'https://github.com/vanxh/openbio',
     upstreamLabel: 'Original project',
-    licenseHref: 'https://github.com/leungcheukfai/ericleung.hk/blob/main/LICENSE',
+    licenseHref:
+      'https://github.com/leungcheukfai/ericleung.hk/blob/main/LICENSE',
     licenseLabel: 'AGPL-3.0 license',
   },
   cards: [
@@ -287,8 +295,7 @@ export const siteConfig: SiteConfig = {
       type: 'email-collect',
       size: { sm: '4x2', md: '4x2' },
       heading: 'Stay in the loop',
-      description:
-        'Subscribe to the my newsletter for latest tech news.',
+      description: 'Subscribe for the latest tech news.',
       buttonText: 'Subscribe',
     },
     {

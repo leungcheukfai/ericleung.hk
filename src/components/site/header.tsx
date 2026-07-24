@@ -77,7 +77,7 @@ export default function SiteHeader() {
         {profile.avatar ? (
           <Image
             src={profile.avatar}
-            alt=""
+            alt="Profile photo"
             width={100}
             height={100}
             priority

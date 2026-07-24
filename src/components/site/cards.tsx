@@ -529,7 +529,7 @@ function FaviconImage({
   return (
     <Image
       src={favicon}
-      alt=""
+      alt={`${getDisplayHostname(href)} logo`}
       width={size}
       height={size}
       className={cn(
@@ -777,7 +777,7 @@ function ImageCard({ card }: { card: SiteImageCard }) {
       <div className="relative h-full min-h-40 w-full">
         <Image
           src={card.url}
-          alt={card.caption ?? 'Image'}
+          alt={card.caption ?? 'Featured image'}
           fill
           className="object-cover"
           sizes="(max-width: 768px) 50vw, 25vw"
@@ -898,7 +898,7 @@ function MapCard({
             {profileAvatar ? (
               <Image
                 src={profileAvatar}
-                alt=""
+                alt="Profile photo on the Hong Kong map"
                 width={40}
                 height={40}
                 className="h-full w-full object-cover"
@@ -991,7 +991,7 @@ function GitHubCard({ card }: { card: SiteGitHubCard }) {
           {stats?.avatar ? (
             <Image
               src={stats.avatar}
-              alt=""
+              alt={`GitHub profile photo for @${card.username}`}
               width={56}
               height={56}
               className="rounded-full border-2 border-border/60"
@@ -1052,7 +1052,7 @@ function GitHubCard({ card }: { card: SiteGitHubCard }) {
             {stats?.avatar ? (
               <Image
                 src={stats.avatar}
-                alt=""
+                alt={`GitHub profile photo for @${card.username}`}
                 width={40}
                 height={40}
                 className="rounded-full border border-border/60"
@@ -1086,7 +1086,7 @@ function GitHubCard({ card }: { card: SiteGitHubCard }) {
         {stats?.avatar ? (
           <Image
             src={stats.avatar}
-            alt=""
+            alt={`GitHub profile photo for @${card.username}`}
             width={48}
             height={48}
             className="rounded-full border-2 border-border/60"
@@ -1136,6 +1136,13 @@ function GitHubCard({ card }: { card: SiteGitHubCard }) {
 }
 
 function SubscribeCard({ card }: { card: SiteEmailCollectCard }) {
+  const webMcpFormAttributes = {
+    toolname: 'subscribe_to_updates',
+    tooldescription: 'Subscribe to email updates about new projects and ideas.',
+  };
+  const webMcpEmailAttributes = {
+    toolparamdescription: 'Email address to receive site updates.',
+  };
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -1197,9 +1204,16 @@ function SubscribeCard({ card }: { card: SiteEmailCollectCard }) {
           <p className="text-muted-foreground text-xs">{description}</p>
         )}
       </div>
-      <form className="flex gap-2" onSubmit={handleSubmit}>
+      <form
+        {...webMcpFormAttributes}
+        className="flex gap-2"
+        onSubmit={handleSubmit}
+      >
         <Input
+          {...webMcpEmailAttributes}
           type="email"
+          name="email"
+          aria-label="Email address"
           placeholder="you@email.com"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
@@ -1605,7 +1619,7 @@ function TwitterCard({ card }: { card: SiteTwitterCard }) {
         <div className="flex items-center gap-3">
           <Image
             src={tweet.user.profileImageUrl}
-            alt=""
+            alt={`${tweet.user.name || `@${tweet.user.screenName}`} profile photo`}
             width={40}
             height={40}
             className="rounded-full"
@@ -1626,7 +1640,7 @@ function TwitterCard({ card }: { card: SiteTwitterCard }) {
           <div className="mt-3 overflow-hidden rounded-xl">
             <Image
               src={tweet.photos[0].url}
-              alt="Tweet media"
+              alt="Image shared in post"
               width={tweet.photos[0].width}
               height={tweet.photos[0].height}
               className="h-auto w-full object-cover"
@@ -1657,7 +1671,7 @@ function TwitterCard({ card }: { card: SiteTwitterCard }) {
         <div className="flex items-center gap-2.5">
           <Image
             src={tweet.user.profileImageUrl}
-            alt=""
+            alt={`${tweet.user.name || `@${tweet.user.screenName}`} profile photo`}
             width={32}
             height={32}
             className="rounded-full"
@@ -1694,7 +1708,7 @@ function TwitterCard({ card }: { card: SiteTwitterCard }) {
         <div className="flex items-center gap-2.5">
           <Image
             src={tweet.user.profileImageUrl}
-            alt=""
+            alt={`${tweet.user.name || `@${tweet.user.screenName}`} profile photo`}
             width={28}
             height={28}
             className="rounded-full"
@@ -1846,7 +1860,7 @@ function MusicCard({
       <div className="relative flex h-full w-full items-center gap-3 p-4">
         <Image
           src={metadata.artwork}
-          alt=""
+          alt={`Album cover for ${metadata.title}${metadata.artist ? ` by ${metadata.artist}` : ''}`}
           width={80}
           height={80}
           priority
@@ -1879,7 +1893,7 @@ function MusicCard({
       <div className="relative flex h-full w-full items-center gap-5 p-5">
         <Image
           src={metadata.artwork}
-          alt=""
+          alt={`Album cover for ${metadata.title}${metadata.artist ? ` by ${metadata.artist}` : ''}`}
           width={140}
           height={140}
           priority
@@ -1955,7 +1969,7 @@ function PodcastsCard({ card }: { card: SitePodcastsCard }) {
                   {item.artwork ? (
                     <Image
                       src={item.artwork}
-                      alt=""
+                      alt={`${item.title} podcast artwork`}
                       fill
                       className="object-cover"
                       sizes="44px"
@@ -2063,7 +2077,7 @@ function YouTubeChannelsCard({
                   {artwork ? (
                     <Image
                       src={artwork}
-                      alt=""
+                      alt={`${title} channel artwork`}
                       fill
                       className="object-cover"
                       sizes="44px"
@@ -2140,7 +2154,7 @@ function BooksCard({
                   {artwork ? (
                     <Image
                       src={artwork}
-                      alt=""
+                      alt={`${title} book cover`}
                       fill
                       className="object-cover"
                       sizes="36px"

@@ -23,7 +23,7 @@ const calSans = LocalFont({
 
 export const metadata: Metadata = {
   ...defaultMetadata,
-  keywords: ['Eric Leung', 'ericleung.hk', 'portfolio', 'links'],
+  keywords: ['AI builder', 'Hong Kong', 'smart home innovation', 'portfolio'],
   icons: {
     icon: '/icon.svg?v=2',
     shortcut: '/icon.svg?v=2',

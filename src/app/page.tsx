@@ -21,6 +21,9 @@ export const metadata: Metadata = {
   ...defaultMetadata,
   alternates: {
     canonical: '/',
+    types: {
+      'application/rss+xml': '/feed.xml',
+    },
   },
   openGraph: {
     ...ogMetadata,
@@ -82,15 +85,6 @@ export default async function HomePage() {
               profileName={siteConfig.profile.name}
               profileAvatar={siteConfig.profile.avatar}
             />
-
-            <section aria-labelledby="explore-heading" className="space-y-2 pt-2">
-              <h2 id="explore-heading" className="font-cal text-2xl text-foreground">
-                Explore my work and interests
-              </h2>
-              <p className="text-muted-foreground text-sm">
-                Projects, social links, reading, favorite tools, podcasts, and ways to connect.
-              </p>
-            </section>
 
             <footer className="animate-fade-in py-8 text-center">
               <div className="flex flex-col items-center gap-3 rounded-3xl border border-border bg-background/80 px-5 py-4 text-center text-muted-foreground text-sm backdrop-blur-sm">
