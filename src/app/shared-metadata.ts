@@ -9,6 +9,10 @@ export const defaultMetadata = {
   title: TITLE,
   description: DESCRIPTION,
   metadataBase: new URL(SITE_URL),
+  authors: [{ name: siteConfig.profile.name, url: SITE_URL }],
+  creator: siteConfig.profile.name,
+  publisher: siteConfig.profile.name,
+  keywords: siteConfig.keywords,
 };
 
 export const twitterMetadata = {

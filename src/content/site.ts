@@ -197,7 +197,7 @@ export const siteConfig: SiteConfig = {
   domain: 'ericleung.hk',
   title: 'Eric Leung',
   description:
-    'Personal website for Eric Leung. Replace this copy in src/content/site.ts with your own bio, links, and bento cards.',
+    'Eric Leung is a Hong Kong-based builder exploring AI, emerging technology, smart home innovation, go-to-market strategy, and mindful living.',
   keywords: ['Eric Leung', 'ericleung.hk', 'portfolio', 'personal website'],
   theme: {
     preset: 'sunset',
@@ -211,7 +211,7 @@ export const siteConfig: SiteConfig = {
     location: 'Hong Kong',
     avatar: '/ericleung.webp',
     bioHtml:
-      '<p>I’m passionate about exploring emerging technologies, especially AI and smart home innovations. I also find inspiration in Buddhist wisdom, and I aspire to one day travel to space.</p>',
+      '<p>I’m a Hong Kong-based builder exploring emerging technologies, especially AI and smart home innovation. I also find inspiration in Buddhist wisdom, and I aspire to one day travel to space.</p>',
     actions: [],
   },
   footer: {

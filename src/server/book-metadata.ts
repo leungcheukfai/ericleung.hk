@@ -1,4 +1,5 @@
 import type { SiteCard } from '@/content/site';
+import { unstable_cache } from 'next/cache';
 
 export type BookMetadata = {
   title: string;
@@ -28,7 +29,9 @@ function extractTextById(html: string, id: string) {
 }
 
 function extractBylineAuthors(html: string) {
-  const byline = html.match(/<div id="bylineInfo"[^>]*>([\s\S]*?)<\/div>/i)?.[1];
+  const byline = html.match(
+    /<div id="bylineInfo"[^>]*>([\s\S]*?)<\/div>/i
+  )?.[1];
   if (!byline) {
     return undefined;
   }
@@ -39,17 +42,16 @@ function extractBylineAuthors(html: string) {
     )
   );
 
-  const authors = matches
-    .flatMap((match) => {
-      const name = match[1];
-      const role = match[2];
+  const authors = matches.flatMap((match) => {
+    const name = match[1];
+    const role = match[2];
 
-      if (!name || !role || !/author/i.test(role)) {
-        return [];
-      }
+    if (!name || !role || !/author/i.test(role)) {
+      return [];
+    }
 
-      return [decodeHtmlEntities(name)];
-    });
+    return [decodeHtmlEntities(name)];
+  });
 
   const names = authors.length
     ? authors
@@ -76,7 +78,10 @@ function extractDynamicImage(html: string) {
   const dynamicImage = html.match(/data-a-dynamic-image="([^"]+)"/i)?.[1];
   if (dynamicImage) {
     const decoded = decodeHtmlEntities(dynamicImage);
-    const urls = Array.from(decoded.matchAll(/https:\/\/[^"]+/g), (match) => match[0]);
+    const urls = Array.from(
+      decoded.matchAll(/https:\/\/[^"]+/g),
+      (match) => match[0]
+    );
     if (urls.length > 0) {
       return urls[urls.length - 1];
     }
@@ -93,7 +98,7 @@ async function fetchBookMetadata(url: string): Promise<BookMetadata | null> {
         'user-agent':
           'Mozilla/5.0 (compatible; ericleung.hk preview fetcher; +https://ericleung.hk)',
       },
-      next: { revalidate: 3600 },
+      cache: 'no-store',
       redirect: 'follow',
     });
 
@@ -115,8 +120,7 @@ async function fetchBookMetadata(url: string): Promise<BookMetadata | null> {
     return {
       title,
       subtitle:
-        extractBylineAuthors(html) ??
-        extractTextById(html, 'productSubtitle'),
+        extractBylineAuthors(html) ?? extractTextById(html, 'productSubtitle'),
       artwork: extractDynamicImage(html),
       url: response.url,
     };
@@ -125,15 +129,25 @@ async function fetchBookMetadata(url: string): Promise<BookMetadata | null> {
   }
 }
 
+const getCachedBookMetadata = unstable_cache(
+  async (url: string) => fetchBookMetadata(url),
+  ['ericleung-hk-book-metadata'],
+  { revalidate: 3600 }
+);
+
 export async function getBookMetadataMap(cards: SiteCard[]) {
   const bookCards = cards.filter(
-    (card): card is Extract<SiteCard, { type: 'books' }> => card.type === 'books'
+    (card): card is Extract<SiteCard, { type: 'books' }> =>
+      card.type === 'books'
   );
 
   const entries = await Promise.all(
     bookCards.map(async (card) => {
       const itemEntries = await Promise.all(
-        card.items.map(async (item) => [item.href, await fetchBookMetadata(item.href)] as const)
+        card.items.map(
+          async (item) =>
+            [item.href, await getCachedBookMetadata(item.href)] as const
+        )
       );
 
       return [card.id, Object.fromEntries(itemEntries)] as const;

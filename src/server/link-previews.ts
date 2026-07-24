@@ -1,4 +1,5 @@
 import type { SiteCard } from '@/content/site';
+import { unstable_cache } from 'next/cache';
 
 type UrlPreview = {
   title?: string;
@@ -25,7 +26,7 @@ async function fetchPreview(url: string): Promise<UrlPreview | null> {
         'user-agent':
           'Mozilla/5.0 (compatible; ericleung.hk preview fetcher; +https://ericleung.hk)',
       },
-      next: { revalidate: 3600 },
+      cache: 'no-store',
     });
 
     if (!response.ok) {
@@ -47,8 +48,7 @@ async function fetchPreview(url: string): Promise<UrlPreview | null> {
       extractMetaTag(html, 'twitter:description') ??
       extractMetaTag(html, 'description');
     const image =
-      extractMetaTag(html, 'og:image') ??
-      extractMetaTag(html, 'twitter:image');
+      extractMetaTag(html, 'og:image') ?? extractMetaTag(html, 'twitter:image');
 
     return {
       title,
@@ -60,14 +60,22 @@ async function fetchPreview(url: string): Promise<UrlPreview | null> {
   }
 }
 
-export async function getUrlPreview(url: string) {
-  return fetchPreview(url);
+const getCachedPreview = unstable_cache(
+  async (url: string) => fetchPreview(url),
+  ['ericleung-hk-url-preview'],
+  { revalidate: 3600 }
+);
+
+export function getUrlPreview(url: string) {
+  return getCachedPreview(url);
 }
 
 export async function getLinkPreviews(cards: SiteCard[]) {
   const linkCards = cards.filter((card) => card.type === 'link');
   const previews = await Promise.all(
-    linkCards.map(async (card) => [card.id, await fetchPreview(card.href)] as const)
+    linkCards.map(
+      async (card) => [card.id, await getCachedPreview(card.href)] as const
+    )
   );
 
   return Object.fromEntries(previews) as Record<string, UrlPreview | null>;

@@ -5,6 +5,7 @@ import {
 } from '@/app/shared-metadata';
 import SiteBentoGrid from '@/components/site/bento-grid';
 import SiteHeader from '@/components/site/header';
+import SiteStructuredData from '@/components/site/structured-data';
 import SiteThemeWrapper from '@/components/site/theme-wrapper';
 import SiteViewTracker from '@/components/site/view-tracker';
 import { siteConfig } from '@/content/site';
@@ -61,6 +62,7 @@ export default async function HomePage() {
       darkMode={siteConfig.theme.darkMode}
       accentColor={siteConfig.theme.accentColor}
     >
+      <SiteStructuredData />
       <SiteViewTracker />
 
       <main className="container mx-auto flex min-h-screen w-full flex-col items-center gap-y-5 px-4 pt-16 pb-16">
@@ -80,6 +82,15 @@ export default async function HomePage() {
               profileName={siteConfig.profile.name}
               profileAvatar={siteConfig.profile.avatar}
             />
+
+            <section aria-labelledby="explore-heading" className="space-y-2 pt-2">
+              <h2 id="explore-heading" className="font-cal text-2xl text-foreground">
+                Explore my work and interests
+              </h2>
+              <p className="text-muted-foreground text-sm">
+                Projects, social links, reading, favorite tools, podcasts, and ways to connect.
+              </p>
+            </section>
 
             <footer className="animate-fade-in py-8 text-center">
               <div className="flex flex-col items-center gap-3 rounded-3xl border border-border bg-background/80 px-5 py-4 text-center text-muted-foreground text-sm backdrop-blur-sm">
