@@ -217,7 +217,7 @@ export const siteConfig: SiteConfig = {
     location: 'Hong Kong',
     avatar: '/ericleung.webp',
     bioHtml:
-      '<p>I’m a Hong Kong-based builder exploring emerging technologies, especially AI and smart home innovation. I also find inspiration in Buddhist wisdom, and I aspire to one day travel to space.</p>',
+      '<p>I’m a Hong Kong-based builder exploring emerging technologies, with a particular interest in AI and smart home innovation. I draw inspiration from Buddhist wisdom and hope to travel to space one day.</p>',
     actions: [],
   },
   footer: {
