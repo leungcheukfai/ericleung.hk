@@ -23,9 +23,24 @@ function isSocialProfile(href: string) {
 
 export default function SiteStructuredData() {
   const origin = getSiteOrigin();
-  const sameAs = siteConfig.cards.flatMap((card) =>
-    card.type === 'link' && isSocialProfile(card.href) ? [card.href] : []
-  );
+  const sameAs = siteConfig.cards.flatMap((card) => {
+    if (card.type === 'github') {
+      return [`https://github.com/${card.username}`];
+    }
+    return card.type === 'link' && isSocialProfile(card.href)
+      ? [card.href]
+      : [];
+  });
+  const projects = siteConfig.projects.map((project) => ({
+    '@type': 'Organization',
+    '@id': `${project.url}/#organization`,
+    name: project.name,
+    url: project.url,
+    description: project.description,
+    ...(project.role === 'founder'
+      ? { founder: { '@id': `${origin}/#person` } }
+      : {}),
+  }));
 
   const graph = [
     {
@@ -38,10 +53,12 @@ export default function SiteStructuredData() {
         ? `${origin}${siteConfig.profile.avatar}`
         : undefined,
       jobTitle: siteConfig.profile.role,
+      knowsAbout: siteConfig.profile.knowsAbout,
       homeLocation: { '@type': 'Place', name: siteConfig.profile.location },
       url: origin,
       sameAs,
     },
+    ...projects,
     {
       '@type': 'WebSite',
       '@id': `${origin}/#website`,
@@ -67,7 +84,10 @@ export default function SiteStructuredData() {
       type="application/ld+json"
       // JSON-LD is generated from trusted local site configuration.
       dangerouslySetInnerHTML={{
-        __html: JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }),
+        __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@graph': graph,
+        }),
       }}
     />
   );

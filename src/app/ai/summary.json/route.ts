@@ -11,12 +11,11 @@ export function GET() {
     location: siteConfig.profile.location,
     url: origin,
     profileUrl: `${origin}/`,
-    topics: [
-      'AI',
-      'emerging technology',
-      'smart home',
-      'go-to-market strategy',
-      'Hong Kong',
-    ],
+    topics: siteConfig.profile.knowsAbout,
+    projects: siteConfig.projects.map(({ name, url, description }) => ({
+      name,
+      url,
+      description,
+    })),
   });
 }

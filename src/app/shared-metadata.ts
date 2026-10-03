@@ -1,7 +1,7 @@
 import { siteConfig } from '@/content/site';
 import { getSiteOrigin } from '@/lib/site-url';
 
-const TITLE = siteConfig.title;
+const TITLE = siteConfig.metaTitle;
 const DESCRIPTION = siteConfig.description;
 const SITE_URL = getSiteOrigin();
 
@@ -24,6 +24,7 @@ export const twitterMetadata = {
   title: TITLE,
   description: DESCRIPTION,
   card: 'summary_large_image',
+  creator: '@ericleung',
   images: [`${SITE_URL}/api/og`],
 };
 

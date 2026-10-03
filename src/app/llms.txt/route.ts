@@ -3,18 +3,44 @@ import { getSiteOrigin } from '@/lib/site-url';
 
 export function GET() {
   const origin = getSiteOrigin();
-  const body = `# ${siteConfig.title}
+  const projects = siteConfig.projects
+    .map(
+      (project) => `- [${project.name}](${project.url}): ${project.description}`
+    )
+    .join('\n');
+  const profiles = siteConfig.cards
+    .flatMap((card) => {
+      if (card.type === 'github') {
+        return [`https://github.com/${card.username}`];
+      }
+      return card.type === 'link' ? [card.href] : [];
+    })
+    .filter((href) => !siteConfig.projects.some((p) => href.startsWith(p.url)))
+    .map((href) => `- ${href}`)
+    .join('\n');
+
+  const body = `# ${siteConfig.profile.name}
 
 > ${siteConfig.description}
 
-## Profile
-- ${origin}/ — biography, projects, interests, social profiles, and ways to connect with Eric Leung.
+${siteConfig.profile.name} is based in ${siteConfig.profile.location}. This is his official personal website.
 
-## Feeds
-- ${origin}/feed.xml — RSS feed for site updates.
+## Profile
+- [Homepage](${origin}/): biography, projects, interests, social profiles, and ways to connect with ${siteConfig.profile.name}.
+
+## Projects
+${projects}
+
+## Profiles and links
+${profiles}
+
+## Machine-readable
+- [Summary](${origin}/ai/summary.json): name, role, location, and topics as JSON.
+- [FAQ](${origin}/ai/faq.json): common questions about ${siteConfig.profile.name}.
+- [RSS feed](${origin}/feed.xml): site updates.
 
 ## Topics
-AI, emerging technology, smart home innovation, go-to-market strategy, Hong Kong, Buddhist wisdom, space, books, podcasts, and product building.
+${siteConfig.profile.knowsAbout.join(', ')}, Hong Kong, Buddhist wisdom, space, books, and podcasts.
 
 ## Canonical source
 ${origin}/

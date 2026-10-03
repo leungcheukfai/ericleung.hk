@@ -12,6 +12,15 @@ export function GET() {
         answer: 'Eric Leung is based in Hong Kong.',
       },
       {
+        question: 'What is Eric Leung working on?',
+        answer: `${siteConfig.projects
+          .map(
+            (project) =>
+              `${project.name} (${project.url}): ${project.description}`
+          )
+          .join(' ')}`,
+      },
+      {
         question: 'How can I contact Eric Leung?',
         answer: `Visit ${origin}/ to find social links or book a meeting.`,
       },

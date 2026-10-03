@@ -159,9 +159,17 @@ export type SiteCard =
   | SiteCalendarCard
   | SiteViewsCard;
 
+type SiteProject = {
+  name: string;
+  url: string;
+  description: string;
+  role?: 'founder';
+};
+
 type SiteConfig = {
   domain: string;
   title: string;
+  metaTitle: string;
   description: string;
   keywords: string[];
   theme: {
@@ -176,6 +184,7 @@ type SiteConfig = {
     location?: string;
     avatar?: string;
     bioHtml: string;
+    knowsAbout: string[];
     actions: Array<{
       label: string;
       href: string;
@@ -190,20 +199,25 @@ type SiteConfig = {
     licenseHref: string;
     licenseLabel: string;
   };
+  projects: SiteProject[];
   cards: SiteCard[];
 };
 
 export const siteConfig: SiteConfig = {
   domain: 'ericleung.hk',
   title: 'Eric Leung',
+  metaTitle: 'Eric Leung — AI Builder in Hong Kong',
   description:
-    'A Hong Kong-based builder exploring AI, emerging technology, smart home innovation, go-to-market strategy, and mindful living.',
+    'Eric Leung is a Hong Kong-based AI builder working on OwlEval, an evaluation lab for AI agents, and Unwire Launch. Interested in smart home and go-to-market.',
   keywords: [
+    'Eric Leung',
+    'Eric Leung Hong Kong',
     'AI builder',
-    'Hong Kong',
+    'OwlEval',
+    'Unwire Launch',
+    'AI agent evaluation',
     'smart home innovation',
     'go-to-market strategy',
-    'personal website',
   ],
   theme: {
     preset: 'sunset',
@@ -218,8 +232,29 @@ export const siteConfig: SiteConfig = {
     avatar: '/ericleung.webp',
     bioHtml:
       '<p>I’m a Hong Kong-based builder exploring emerging technologies, with a particular interest in AI and smart home innovation. I draw inspiration from Buddhist wisdom and hope to travel to space one day.</p>',
+    knowsAbout: [
+      'Artificial intelligence',
+      'AI agent evaluation',
+      'Emerging technology',
+      'Smart home',
+      'Go-to-market strategy',
+      'Product launches',
+    ],
     actions: [],
   },
+  projects: [
+    {
+      name: 'OwlEval',
+      url: 'https://owleval.com',
+      description: 'Pay-as-you-go evaluation lab for AI agents.',
+      role: 'founder',
+    },
+    {
+      name: 'Unwire Launch',
+      url: 'https://launch.unwire.hk',
+      description: 'Helps products get seen in Asia.',
+    },
+  ],
   footer: {
     notice:
       'Based on OpenBio, modified for this site and available under AGPL-3.0.',
