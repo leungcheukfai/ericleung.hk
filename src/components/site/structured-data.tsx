@@ -1,10 +1,30 @@
 import { siteConfig } from '@/content/site';
 import { getSiteOrigin } from '@/lib/site-url';
 
+const SOCIAL_PROFILE_HOSTS = new Set([
+  'instagram.com',
+  'linkedin.com',
+  'threads.net',
+  'threads.com',
+  'x.com',
+  'twitter.com',
+]);
+
+const WWW_PREFIX_RE = /^www\./;
+
+function isSocialProfile(href: string) {
+  try {
+    const hostname = new URL(href).hostname.replace(WWW_PREFIX_RE, '');
+    return SOCIAL_PROFILE_HOSTS.has(hostname);
+  } catch {
+    return false;
+  }
+}
+
 export default function SiteStructuredData() {
   const origin = getSiteOrigin();
   const sameAs = siteConfig.cards.flatMap((card) =>
-    card.type === 'link' && card.href.startsWith('http') ? [card.href] : []
+    card.type === 'link' && isSocialProfile(card.href) ? [card.href] : []
   );
 
   const graph = [
