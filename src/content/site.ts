@@ -245,17 +245,16 @@ export const siteConfig: SiteConfig = {
       description: 'threads.net/@ericleung.hk',
     },
     {
-      id: 'gtmguide-project',
+      id: 'unwire-launch-project',
       type: 'link',
       size: { sm: '2x2', md: '4x2' },
       position: {
         sm: { x: 1, y: 2 },
         md: { x: 1, y: 0 },
       },
-      href: 'https://gtmguide.hk',
-      label: 'GTM Guide',
-      description:
-        'Practical go-to-market tools and playbooks I am curating right now.',
+      href: 'https://launch.unwire.hk',
+      label: 'Unwire Launch',
+      description: 'Let your product be seen in Asia.',
       variant: 'spotlight',
     },
     {
