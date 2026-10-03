@@ -39,6 +39,7 @@ import {
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState, useTransition } from 'react';
 import type { LinkPreviewMap } from '../site/cards';
+import SortableList from './sortable-list';
 
 type EditorStatus = {
   kind: 'error' | 'success';
@@ -59,18 +60,6 @@ type ListFieldDescriptor = {
   placeholder?: string;
   type?: 'text' | 'url';
 };
-
-type DragState =
-  | {
-      kind: 'card';
-      index: number;
-    }
-  | {
-      kind: 'item';
-      cardId: string;
-      index: number;
-    }
-  | null;
 
 const BENTO_SIZE_OPTIONS = [
   { value: '2x2', label: '2 x 2' },
@@ -632,20 +621,16 @@ function IconButton({
 
 function ListItemsEditor({
   card,
-  dragState,
   onAddItem,
   onChangeItem,
   onMoveItem,
   onRemoveItem,
-  onSetDragState,
 }: {
   card: ListCapableCard;
-  dragState: DragState;
   onAddItem: () => void;
   onChangeItem: (itemIndex: number, key: string, value: string) => void;
   onMoveItem: (fromIndex: number, toIndex: number) => void;
   onRemoveItem: (itemIndex: number) => void;
-  onSetDragState: (dragState: DragState) => void;
 }) {
   const fields = LIST_FIELD_CONFIG[card.type];
 
@@ -668,48 +653,25 @@ function ListItemsEditor({
         </button>
       </div>
 
-      <div className="space-y-3">
-        {card.items.map((item, itemIndex) => (
-          <div
-            key={`${card.id}-${itemIndex}`}
-            onDragOver={(event) => {
-              if (
-                dragState?.kind === 'item' &&
-                dragState.cardId === card.id &&
-                dragState.index !== itemIndex
-              ) {
-                event.preventDefault();
-              }
-            }}
-            onDrop={(event) => {
-              event.preventDefault();
-              if (
-                dragState?.kind === 'item' &&
-                dragState.cardId === card.id &&
-                dragState.index !== itemIndex
-              ) {
-                onMoveItem(dragState.index, itemIndex);
-              }
-              onSetDragState(null);
-            }}
-            className="rounded-2xl border border-border/60 bg-background/80 p-4"
-          >
+      <SortableList
+        items={card.items as ListItemRecord[]}
+        getId={(_item, itemIndex) => `${card.id}-${itemIndex}`}
+        onMove={onMoveItem}
+        className="space-y-3"
+        rowClassName="rounded-2xl border border-border/60 bg-background p-4"
+      >
+        {(item, itemIndex, { handleProps }) => (
+          <>
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <div
-                  draggable
-                  onDragStart={() =>
-                    onSetDragState({
-                      kind: 'item',
-                      cardId: card.id,
-                      index: itemIndex,
-                    })
-                  }
-                  onDragEnd={() => onSetDragState(null)}
-                  className="inline-flex h-9 w-9 cursor-grab items-center justify-center rounded-xl border border-border/60 bg-muted/40 text-muted-foreground"
+                <button
+                  type="button"
+                  aria-label={`Drag item ${itemIndex + 1}`}
+                  {...handleProps}
+                  className="inline-flex h-9 w-9 cursor-grab items-center justify-center rounded-xl border border-border/60 bg-muted/40 text-muted-foreground active:cursor-grabbing"
                 >
                   <GripVertical className="h-4 w-4" />
-                </div>
+                </button>
                 <div>
                   <p className="font-medium text-sm">Item {itemIndex + 1}</p>
                   <p className="text-muted-foreground text-xs">
@@ -753,7 +715,7 @@ function ListItemsEditor({
               {fields.map((field) => (
                 <Field key={field.key} label={field.label}>
                   <TextInput
-                    value={(item as ListItemRecord)[field.key]}
+                    value={item[field.key]}
                     type={field.type}
                     placeholder={field.placeholder}
                     onChange={(value) =>
@@ -763,9 +725,9 @@ function ListItemsEditor({
                 </Field>
               ))}
             </div>
-          </div>
-        ))}
-      </div>
+          </>
+        )}
+      </SortableList>
     </div>
   );
 }
@@ -800,7 +762,6 @@ export default function AdminCardsEditor({
   const [newCardType, setNewCardType] = useState<SiteCard['type']>('link');
   const [previewMode, setPreviewMode] = useState<SiteRenderBreakpoint>('md');
   const [status, setStatus] = useState<EditorStatus | null>(null);
-  const [dragState, setDragState] = useState<DragState>(null);
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
@@ -1315,7 +1276,6 @@ export default function AdminCardsEditor({
             </div>
             <ListItemsEditor
               card={card}
-              dragState={dragState}
               onAddItem={() => addListItem(card)}
               onChangeItem={(itemIndex, key, value) =>
                 updateListItemField(card, itemIndex, key, value)
@@ -1324,7 +1284,6 @@ export default function AdminCardsEditor({
                 moveListItem(card, fromIndex, toIndex)
               }
               onRemoveItem={(itemIndex) => removeListItem(card, itemIndex)}
-              onSetDragState={setDragState}
             />
           </div>
         );
@@ -1449,51 +1408,31 @@ export default function AdminCardsEditor({
                 </button>
               </div>
 
-              <div className="mt-4 space-y-2">
-                {cards.map((card, index) => {
+              <SortableList
+                items={cards}
+                getId={(card) => card.id}
+                onMove={moveCard}
+                className="mt-4 space-y-2"
+              >
+                {(card, _index, { handleProps, isDragging }) => {
                   const active = card.id === selectedCard?.id;
 
                   return (
                     <div
-                      key={card.id}
-                      onDragOver={(event) => {
-                        if (
-                          dragState?.kind === 'card' &&
-                          dragState.index !== index
-                        ) {
-                          event.preventDefault();
-                        }
-                      }}
-                      onDrop={(event) => {
-                        event.preventDefault();
-                        if (
-                          dragState?.kind === 'card' &&
-                          dragState.index !== index
-                        ) {
-                          moveCard(dragState.index, index);
-                        }
-                        setDragState(null);
-                      }}
                       className={cn(
-                        'rounded-2xl border p-3 transition',
+                        'rounded-2xl border p-3 transition-colors',
                         active
                           ? 'border-primary/40 bg-primary/5 shadow-sm'
-                          : 'border-border/60 bg-background/80 hover:border-border hover:bg-muted/20'
+                          : 'border-border/60 bg-background hover:border-border hover:bg-muted/20',
+                        isDragging && 'border-primary/40 bg-background'
                       )}
                     >
                       <div className="flex items-start gap-3">
                         <button
                           type="button"
-                          draggable
-                          onDragStart={() =>
-                            setDragState({
-                              kind: 'card',
-                              index,
-                            })
-                          }
-                          onDragEnd={() => setDragState(null)}
-                          onClick={(event) => event.stopPropagation()}
-                          className="inline-flex h-9 w-9 shrink-0 cursor-grab items-center justify-center rounded-xl border border-border/60 bg-muted/40 text-muted-foreground"
+                          aria-label={`Drag ${getSiteCardTitle(card)}`}
+                          {...handleProps}
+                          className="inline-flex h-9 w-9 shrink-0 cursor-grab items-center justify-center rounded-xl border border-border/60 bg-muted/40 text-muted-foreground active:cursor-grabbing"
                         >
                           <GripVertical className="h-4 w-4" />
                         </button>
@@ -1527,8 +1466,8 @@ export default function AdminCardsEditor({
                       </div>
                     </div>
                   );
-                })}
-              </div>
+                }}
+              </SortableList>
             </Panel>
           </div>
 
