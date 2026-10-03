@@ -208,14 +208,14 @@ export const siteConfig: SiteConfig = {
   title: 'Eric Leung',
   metaTitle: 'Eric Leung — AI Builder in Hong Kong',
   description:
-    'Eric Leung is a Hong Kong-based AI builder working on OwlEval, an evaluation lab for AI agents, and Unwire Launch. Interested in smart home and go-to-market.',
+    'Eric Leung is a Hong Kong-based AI builder. He runs OwlEval, AI cybersecurity news for defenders, and works on Unwire Launch.',
   keywords: [
     'Eric Leung',
     'Eric Leung Hong Kong',
     'AI builder',
     'OwlEval',
     'Unwire Launch',
-    'AI agent evaluation',
+    'AI security',
     'smart home innovation',
     'go-to-market strategy',
   ],
@@ -234,7 +234,7 @@ export const siteConfig: SiteConfig = {
       '<p>I’m a Hong Kong-based builder exploring emerging technologies, with a particular interest in AI and smart home innovation. I draw inspiration from Buddhist wisdom and hope to travel to space one day.</p>',
     knowsAbout: [
       'Artificial intelligence',
-      'AI agent evaluation',
+      'AI security',
       'Emerging technology',
       'Smart home',
       'Go-to-market strategy',
@@ -246,7 +246,8 @@ export const siteConfig: SiteConfig = {
     {
       name: 'OwlEval',
       url: 'https://owleval.com',
-      description: 'Pay-as-you-go evaluation lab for AI agents.',
+      description:
+        'AI cybersecurity news for defenders, tracking threats to AI agents, models, and supply chains.',
       role: 'founder',
     },
     {
@@ -310,8 +311,7 @@ export const siteConfig: SiteConfig = {
       size: { sm: '4x2', md: '4x2' },
       href: 'https://owleval.com',
       label: 'OwlEval',
-      description:
-        'Pay-as-you-go evaluation lab for AI agents. OwlEval grades your agents.',
+      description: 'AI cybersecurity news for defenders.',
       variant: 'spotlight',
     },
     {
