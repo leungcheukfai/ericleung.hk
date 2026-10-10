@@ -47,7 +47,10 @@ export default function SiteStructuredData() {
       '@type': 'Person',
       '@id': `${origin}/#person`,
       name: siteConfig.profile.name,
-      alternateName: siteConfig.profile.handle,
+      alternateName: [
+        siteConfig.profile.chineseName,
+        siteConfig.profile.handle,
+      ].filter(Boolean),
       description: siteConfig.description,
       image: siteConfig.profile.avatar
         ? `${origin}${siteConfig.profile.avatar}`

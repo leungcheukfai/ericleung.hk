@@ -7,6 +7,14 @@ export function GET() {
     url: `${origin}/ai/faq.json`,
     questions: [
       { question: 'Who is Eric Leung?', answer: siteConfig.description },
+      ...(siteConfig.profile.chineseName
+        ? [
+            {
+              question: "What is Eric Leung's Chinese name?",
+              answer: `Eric Leung's Chinese name is ${siteConfig.profile.chineseName}.`,
+            },
+          ]
+        : []),
       {
         question: 'Where is Eric Leung based?',
         answer: 'Eric Leung is based in Hong Kong.',

@@ -17,7 +17,7 @@ function HeaderButton({
       href={href}
       target={href.startsWith('http') ? '_blank' : undefined}
       rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
-      className="inline-flex h-9 items-center justify-center gap-1.5 rounded-full border border-border bg-background/80 px-4 text-sm text-muted-foreground backdrop-blur-sm transition-all hover:border-primary hover:text-foreground"
+      className="inline-flex h-9 items-center justify-center gap-1.5 rounded-full border border-border bg-background/80 px-4 text-muted-foreground text-sm backdrop-blur-sm transition-all hover:border-primary hover:text-foreground"
     >
       {label}
       {href.startsWith('http') && <ExternalLink className="h-3.5 w-3.5" />}
@@ -53,7 +53,7 @@ function ShareButton() {
     <button
       type="button"
       onClick={() => void handleShare()}
-      className="inline-flex h-9 items-center justify-center gap-1.5 rounded-full border border-border bg-background/80 px-4 text-sm text-muted-foreground backdrop-blur-sm transition-all hover:border-primary hover:text-foreground"
+      className="inline-flex h-9 items-center justify-center gap-1.5 rounded-full border border-border bg-background/80 px-4 text-muted-foreground text-sm backdrop-blur-sm transition-all hover:border-primary hover:text-foreground"
     >
       {copied ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
       {copied ? 'Copied' : 'Share'}
@@ -105,11 +105,19 @@ export default function SiteHeader() {
       <div className="flex items-center gap-x-2">
         <h1 className="min-w-0 bg-transparent font-cal text-4xl text-foreground md:text-5xl lg:text-6xl">
           {profile.name}
+          {profile.chineseName && (
+            <span
+              lang="zh-Hant-HK"
+              className="ml-3 align-baseline font-sans text-2xl text-muted-foreground md:text-3xl lg:text-4xl"
+            >
+              {profile.chineseName}
+            </span>
+          )}
         </h1>
       </div>
 
       <div
-        className="prose prose-sm mx-auto max-w-none text-foreground dark:prose-invert lg:prose-lg prose-headings:font-cal prose-p:m-0 prose-p:text-foreground prose-code:rounded prose-code:bg-muted prose-code:px-1 prose-code:py-0.5"
+        className="prose prose-sm dark:prose-invert lg:prose-lg prose-p:m-0 mx-auto max-w-none prose-code:rounded prose-code:bg-muted prose-code:px-1 prose-code:py-0.5 prose-headings:font-cal prose-p:text-foreground text-foreground"
         // biome-ignore lint/security/noDangerouslySetInnerHtml: trusted local config content
         dangerouslySetInnerHTML={{ __html: profile.bioHtml }}
       />

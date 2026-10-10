@@ -5,6 +5,7 @@ export function GET() {
   const origin = getSiteOrigin();
   return Response.json({
     name: siteConfig.profile.name,
+    chineseName: siteConfig.profile.chineseName,
     handle: siteConfig.profile.handle,
     description: siteConfig.description,
     role: siteConfig.profile.role,

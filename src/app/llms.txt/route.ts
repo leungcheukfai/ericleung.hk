@@ -19,11 +19,12 @@ export function GET() {
     .map((href) => `- ${href}`)
     .join('\n');
 
-  const body = `# ${siteConfig.profile.name}
+  const { name, chineseName } = siteConfig.profile;
+  const body = `# ${chineseName ? `${name} (${chineseName})` : name}
 
 > ${siteConfig.description}
 
-${siteConfig.profile.name} is based in ${siteConfig.profile.location}. This is his official personal website.
+${siteConfig.profile.name}${chineseName ? `, whose Chinese name is ${chineseName},` : ''} is based in ${siteConfig.profile.location}. This is his official personal website.
 
 ## Profile
 - [Homepage](${origin}/): biography, projects, interests, social profiles, and ways to connect with ${siteConfig.profile.name}.
