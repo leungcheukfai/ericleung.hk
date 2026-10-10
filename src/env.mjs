@@ -33,6 +33,9 @@ export const env = createEnv({
     VERCEL_PROJECT_ID: z.string().min(1).optional(),
     VERCEL_TEAM_ID: z.string().min(1).optional(),
     VERCEL_TOKEN: z.string().min(1).optional(),
+    /** RankOwl blog: API origin (https://rankowl.ericleung.hk) and this site's key. */
+    RANKOWL_API_URL: z.string().url().optional(),
+    RANKOWL_SITE_KEY: z.string().min(1).optional(),
   },
   client: {
     NEXT_PUBLIC_URL: z.string().optional(),
@@ -70,6 +73,8 @@ export const env = createEnv({
     VERCEL_PROJECT_ID: process.env.VERCEL_PROJECT_ID,
     VERCEL_TEAM_ID: process.env.VERCEL_TEAM_ID,
     VERCEL_TOKEN: process.env.VERCEL_TOKEN,
+    RANKOWL_API_URL: process.env.RANKOWL_API_URL,
+    RANKOWL_SITE_KEY: process.env.RANKOWL_SITE_KEY,
   },
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
 });
