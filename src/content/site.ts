@@ -210,7 +210,7 @@ export const siteConfig: SiteConfig = {
   title: 'Eric Leung',
   metaTitle: 'Eric Leung — AI Builder in Hong Kong',
   description:
-    'Eric Leung is a Hong Kong-based AI builder. He runs OwlEval, AI cybersecurity news for defenders, and works on Unwire Launch.',
+    'Eric Leung is a Hong Kong-based AI builder. He runs OwlEval, AI cybersecurity news for defenders, and founded Unwire Launch.',
   keywords: [
     'Eric Leung',
     'Eric Leung Hong Kong',
@@ -245,7 +245,10 @@ export const siteConfig: SiteConfig = {
       'Go-to-market strategy',
       'Product launches',
     ],
-    actions: [{ label: 'Blog', href: '/blog' }],
+    actions: [
+      { label: 'Blog', href: '/blog' },
+      { label: '中文', href: '/zh' },
+    ],
   },
   projects: [
     {
@@ -259,6 +262,7 @@ export const siteConfig: SiteConfig = {
       name: 'Unwire Launch',
       url: 'https://launch.unwire.hk',
       description: 'Helps products get seen in Asia.',
+      role: 'founder',
     },
   ],
   footer: {

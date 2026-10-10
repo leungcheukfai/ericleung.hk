@@ -2,6 +2,7 @@
 
 import { AppleMusic } from '@/components/icons/apple-music';
 import { Spotify } from '@/components/icons/spotify';
+import { T } from '@/components/site/locale';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -607,7 +608,7 @@ function LinkCard({
                 <PlatformIcon href={card.href} />
               </div>
               <div className="rounded-full border border-primary/15 bg-primary/8 px-2.5 py-1 text-[11px] text-primary">
-                Current project
+                <T>Current project</T>
               </div>
             </div>
 
@@ -646,7 +647,7 @@ function LinkCard({
               variant="outline"
               className={platform?.actionClassName ?? 'rounded-full'}
             >
-              {platform?.actionLabel ?? 'Open'}
+              <T>{platform?.actionLabel ?? 'Open'}</T>
             </Button>
           </div>
         </CardShell>
@@ -678,7 +679,7 @@ function LinkCard({
               </div>
               <div>
                 <Button size="sm" variant="outline" className="rounded-full">
-                  {platform?.actionLabel ?? 'Visit'}
+                  <T>{platform?.actionLabel ?? 'Visit'}</T>
                 </Button>
               </div>
             </div>
@@ -717,7 +718,7 @@ function LinkCard({
                 size="sm"
                 className={platform?.actionClassName ?? 'rounded-full'}
               >
-                {platform?.actionLabel ?? 'Open'}
+                <T>{platform?.actionLabel ?? 'Open'}</T>
               </Button>
             </div>
           </div>
@@ -748,7 +749,7 @@ function LinkCard({
               size="sm"
               className={platform?.actionClassName ?? 'rounded-full'}
             >
-              {platform?.actionLabel ?? 'Open'}
+              <T>{platform?.actionLabel ?? 'Open'}</T>
             </Button>
           </div>
         </div>
@@ -927,7 +928,7 @@ function MapCard({
               <MapPin className="h-3.5 w-3.5 shrink-0 text-primary" />
               <p className="truncate font-medium text-sm text-white">{label}</p>
             </div>
-            <p className="text-white/65 text-[11px]">{coordinateLabel}</p>
+            <p className="text-[11px] text-white/65">{coordinateLabel}</p>
           </div>
         </div>
       )}
@@ -1183,8 +1184,12 @@ function SubscribeCard({ card }: { card: SiteEmailCollectCard }) {
         <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
           <Mail className="h-5 w-5" />
         </div>
-        <p className="font-cal text-sm">You&apos;re subscribed</p>
-        <p className="text-muted-foreground text-xs">Thanks for signing up.</p>
+        <p className="font-cal text-sm">
+          <T>{"You're subscribed"}</T>
+        </p>
+        <p className="text-muted-foreground text-xs">
+          <T>Thanks for signing up.</T>
+        </p>
       </CardShell>
     );
   }
@@ -1222,10 +1227,14 @@ function SubscribeCard({ card }: { card: SiteEmailCollectCard }) {
         />
         <Button
           type="submit"
-          className={compact ? 'h-8 rounded-lg px-3 text-xs' : 'rounded-xl'}
+          className={
+            compact
+              ? 'h-8 shrink-0 whitespace-nowrap rounded-lg px-3 text-xs'
+              : 'shrink-0 whitespace-nowrap rounded-xl'
+          }
           disabled={loading}
         >
-          {loading ? '...' : buttonText}
+          {loading ? '...' : <T>{buttonText}</T>}
         </Button>
       </form>
       {error && <p className="text-destructive text-xs">{error}</p>}
@@ -1913,7 +1922,7 @@ function MusicCard({
           <div className="mt-3 flex items-center gap-2">
             <MusicProviderIcon provider={metadata.provider} />
             <span className="text-white/50 text-xs">
-              Listen on{' '}
+              <T>Listen on</T>{' '}
               {metadata.provider === 'spotify' ? 'Spotify' : 'Apple Music'}
             </span>
           </div>
@@ -1943,7 +1952,8 @@ function PodcastsCard({ card }: { card: SitePodcastsCard }) {
           <PiApplePodcastsLogoFill className="h-4 w-4 text-[#872EC4] md:h-4.5 md:w-4.5" />
         </div>
         <div className="rounded-full border border-border/60 bg-muted/40 px-2 py-0.5 text-[10px] text-muted-foreground md:px-2.5">
-          {card.items.length} {card.items.length === 1 ? 'podcast' : 'podcasts'}
+          {card.items.length}{' '}
+          <T>{card.items.length === 1 ? 'podcast' : 'podcasts'}</T>
         </div>
       </div>
 
@@ -2041,7 +2051,8 @@ function YouTubeChannelsCard({
           <FaYoutube className="h-4 w-4 text-[#FF0000] md:h-4.5 md:w-4.5" />
         </div>
         <div className="rounded-full border border-border/60 bg-muted/40 px-2 py-0.5 text-[10px] text-muted-foreground md:px-2.5">
-          {card.items.length} {card.items.length === 1 ? 'channel' : 'channels'}
+          {card.items.length}{' '}
+          <T>{card.items.length === 1 ? 'channel' : 'channels'}</T>
         </div>
       </div>
 
@@ -2117,7 +2128,8 @@ function BooksCard({
           <BookOpen className="h-4 w-4 text-[#8B5E34] md:h-4.5 md:w-4.5" />
         </div>
         <div className="rounded-full border border-border/60 bg-muted/40 px-2 py-0.5 text-[10px] text-muted-foreground md:px-2.5">
-          {card.items.length} {card.items.length === 1 ? 'book' : 'books'}
+          {card.items.length}{' '}
+          <T>{card.items.length === 1 ? 'book' : 'books'}</T>
         </div>
       </div>
 
@@ -2193,7 +2205,8 @@ function FavoritesCard({ card }: { card: SiteFavoritesCard }) {
           <Heart className="h-4 w-4 text-red-500 md:h-4.5 md:w-4.5" />
         </div>
         <div className="rounded-full border border-border/60 bg-muted/40 px-2 py-0.5 text-[10px] text-muted-foreground md:px-2.5">
-          {card.items.length} {card.items.length === 1 ? 'pick' : 'picks'}
+          {card.items.length}{' '}
+          <T>{card.items.length === 1 ? 'pick' : 'picks'}</T>
         </div>
       </div>
 
@@ -2304,7 +2317,7 @@ function CalendarCard({ card }: { card: SiteCalendarCard }) {
           </div>
           <div className="mt-auto space-y-1">
             <p className="font-cal text-base leading-tight">
-              {card.title || 'Book a time'}
+              <T>{card.title || 'Book a time'}</T>
             </p>
             <p className="text-muted-foreground text-xs">
               {card.description || 'Schedule a meeting with me'}
@@ -2320,7 +2333,9 @@ function CalendarCard({ card }: { card: SiteCalendarCard }) {
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogContent className="flex h-[85vh] max-h-175 flex-col overflow-hidden sm:max-w-2xl">
             <DialogHeader className="shrink-0">
-              <DialogTitle>{card.title || 'Book a time'}</DialogTitle>
+              <DialogTitle>
+                <T>{card.title || 'Book a time'}</T>
+              </DialogTitle>
             </DialogHeader>
             <div className="min-h-0 flex-1 overflow-hidden rounded-xl border border-border">
               <iframe

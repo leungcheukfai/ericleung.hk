@@ -14,6 +14,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 1,
+      alternates: {
+        languages: { en: `${BASE_URL}/`, 'zh-Hant-HK': `${BASE_URL}/zh` },
+      },
     },
     {
       url: `${BASE_URL}/legal/privacy`,
@@ -26,6 +29,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: 'yearly',
       priority: 0.3,
+    },
+    {
+      url: `${BASE_URL}/zh`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.9,
+      alternates: {
+        languages: { en: `${BASE_URL}/`, 'zh-Hant-HK': `${BASE_URL}/zh` },
+      },
     },
     {
       url: `${BASE_URL}/blog`,

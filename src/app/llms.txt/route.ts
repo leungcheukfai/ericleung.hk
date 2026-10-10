@@ -28,6 +28,8 @@ ${siteConfig.profile.name}${chineseName ? `, whose Chinese name is ${chineseName
 
 ## Profile
 - [Homepage](${origin}/): biography, projects, interests, social profiles, and ways to connect with ${siteConfig.profile.name}.
+- [中文主頁](${origin}/zh): the same profile in Traditional Chinese.
+- [Blog](${origin}/blog): articles by ${siteConfig.profile.name}.
 
 ## Projects
 ${projects}
