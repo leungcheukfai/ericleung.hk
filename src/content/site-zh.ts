@@ -8,7 +8,7 @@ import { type SiteCard, siteConfig } from '@/content/site';
 export const zhTitle = '梁焯輝 Eric Leung';
 export const zhMetaTitle = '梁焯輝 Eric Leung｜香港獨立開發者';
 export const zhDescription =
-  '梁焯輝（Eric Leung）是香港的獨立開發者，營運為防守方而設的 AI 網絡安全新聞 OwlEval，並參與 Unwire Launch。';
+  '梁焯輝（Eric Leung），香港獨立開發者，營運 AI 安全資訊平台 OwlEval，並創辦了 Unwire Launch。';
 
 export const zhProfile: typeof siteConfig.profile = {
   ...siteConfig.profile,
@@ -17,7 +17,7 @@ export const zhProfile: typeof siteConfig.profile = {
   role: '獨立開發者',
   location: '香港',
   bioHtml:
-    '<p>我是一位身處香港的開發者，專注探索新興科技，尤其熱衷於人工智能與智能家居。我從佛學智慧中汲取靈感，也希望有一天能夠到太空旅行。</p>',
+    '<p>我是香港的獨立開發者，喜歡探索新興科技，特別是 AI 和智能家居。佛學帶給我很多啟發；我的夢想是有一天到太空旅行。</p>',
   actions: [
     { label: 'English', href: '/' },
     { label: '網誌', href: '/blog' },
@@ -37,10 +37,10 @@ const CARD_TEXT: Record<
     buttonText?: string;
   }
 > = {
-  'unwire-launch-project': { description: '讓你的產品在亞洲被看見。' },
-  'owleval-project': { description: '為防守方而設的 AI 網絡安全新聞。' },
+  'unwire-launch-project': { description: '讓亞洲看見你的產品。' },
+  'owleval-project': { description: '為網絡安全人員而設的 AI 安全資訊。' },
   'hong-kong-map': { label: '香港' },
-  'book-a-time': { title: '預約時間', description: '預約與我進行 30 分鐘會面' },
+  'book-a-time': { title: '預約時間', description: '預約 30 分鐘，和我聊聊' },
   newsletter: {
     heading: '訂閱更新',
     description: '訂閱最新科技資訊。',
@@ -56,15 +56,15 @@ const CARD_TEXT: Record<
   },
   'things-i-like': {
     title: '我喜愛的',
-    description: '我一再回購的品牌、工具與產品。',
+    description: '我愛用的品牌、工具和產品。',
   },
-  bookshelf: { title: '書架', description: '我反覆重讀並推薦的書。' },
+  bookshelf: { title: '書架', description: '我一讀再讀、會推薦給朋友的書。' },
 };
 
 /** Project links matched by address, so cards re-created in /admin under new ids still translate. */
 const LINK_TEXT: Record<string, { description: string }> = {
-  'https://launch.unwire.hk': { description: '讓你的產品在亞洲被看見。' },
-  'https://owleval.com': { description: '為防守方而設的 AI 網絡安全新聞。' },
+  'https://launch.unwire.hk': { description: '讓亞洲看見你的產品。' },
+  'https://owleval.com': { description: '為網絡安全人員而設的 AI 安全資訊。' },
 };
 
 export function zhCards(cards: SiteCard[]): SiteCard[] {
