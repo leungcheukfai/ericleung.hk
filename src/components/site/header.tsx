@@ -1,9 +1,12 @@
 'use client';
 
+import { T } from '@/components/site/locale';
 import { siteConfig } from '@/content/site';
 import { Check, ExternalLink, MapPin, Share2 } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
+
+const CJK = /[\u4e00-\u9fff]/;
 
 function HeaderButton({
   href,
@@ -56,13 +59,17 @@ function ShareButton() {
       className="inline-flex h-9 items-center justify-center gap-1.5 rounded-full border border-border bg-background/80 px-4 text-muted-foreground text-sm backdrop-blur-sm transition-all hover:border-primary hover:text-foreground"
     >
       {copied ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
-      {copied ? 'Copied' : 'Share'}
+      <T>{copied ? 'Copied' : 'Share'}</T>
     </button>
   );
 }
 
-export default function SiteHeader() {
-  const { profile } = siteConfig;
+/** The home header. `profile` swaps in another language's profile (the /zh page). */
+export default function SiteHeader({
+  profile = siteConfig.profile,
+}: {
+  profile?: typeof siteConfig.profile;
+} = {}) {
   const initials = profile.name
     .split(' ')
     .filter(Boolean)
@@ -107,7 +114,7 @@ export default function SiteHeader() {
           {profile.name}
           {profile.chineseName && (
             <span
-              lang="zh-Hant-HK"
+              lang={CJK.test(profile.chineseName) ? 'zh-Hant-HK' : 'en'}
               className="ml-3 align-baseline font-sans text-2xl text-muted-foreground md:text-3xl lg:text-4xl"
             >
               {profile.chineseName}

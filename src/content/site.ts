@@ -245,7 +245,10 @@ export const siteConfig: SiteConfig = {
       'Go-to-market strategy',
       'Product launches',
     ],
-    actions: [{ label: 'Blog', href: '/blog' }],
+    actions: [
+      { label: 'Blog', href: '/blog' },
+      { label: '中文', href: '/zh' },
+    ],
   },
   projects: [
     {
