@@ -3,11 +3,11 @@ import {
   ogMetadata,
   twitterMetadata,
 } from '@/app/shared-metadata';
+import ArticleCard from '@/components/site/article-card';
 import { siteConfig } from '@/content/site';
 import { listArticles } from '@/lib/rankowl';
 import { getSiteOrigin } from '@/lib/site-url';
 import type { Metadata } from 'next';
-import Link from 'next/link';
 
 const PATH = '/blog';
 const TITLE = `Blog · ${siteConfig.title}`;
@@ -32,51 +32,22 @@ export const metadata: Metadata = {
 export default async function BlogPage() {
   const articles = await listArticles();
   return (
-    <section className="flex flex-col gap-8">
-      <h1 className="font-[family-name:var(--font-calsans)] text-3xl tracking-tight md:text-4xl">
-        Blog
-      </h1>
+    <section className="flex animate-fade-in flex-col gap-6">
+      <div className="flex flex-col gap-2">
+        <h1 className="font-cal text-4xl text-foreground md:text-5xl">Blog</h1>
+        <p className="text-muted-foreground">
+          Notes from {siteConfig.profile.name}.
+        </p>
+      </div>
       {articles.length === 0 ? (
-        <p className="text-muted-foreground">No articles yet.</p>
+        <p className="rounded-2xl border border-border bg-card p-6 text-muted-foreground shadow-sm">
+          No articles yet.
+        </p>
       ) : (
-        <ul className="flex flex-col gap-4">
+        <ul className="grid gap-4 sm:grid-cols-2">
           {articles.map((article) => (
             <li key={article.id}>
-              <Link
-                href={`/blog/${article.slug}`}
-                className="group flex flex-col gap-3 rounded-3xl border border-border bg-background/80 p-5 backdrop-blur-sm transition-colors hover:bg-background md:flex-row md:items-start"
-              >
-                {article.headerImage ? (
-                  // biome-ignore lint/nursery/noImgElement: remote images from RankOwl's blob store
-                  <img
-                    src={article.headerImage.url}
-                    alt={article.headerImage.alt}
-                    width={article.headerImage.width ?? 1536}
-                    height={article.headerImage.height ?? 1024}
-                    loading="lazy"
-                    className="aspect-[3/2] w-full rounded-2xl object-cover md:w-48 md:flex-none"
-                  />
-                ) : null}
-                <span className="flex flex-col gap-1.5">
-                  <span className="font-semibold text-foreground text-lg leading-snug group-hover:underline">
-                    {article.title}
-                  </span>
-                  <span className="text-muted-foreground text-sm leading-relaxed">
-                    {article.metaDescription || article.excerpt}
-                  </span>
-                  {article.publishedAt ? (
-                    <time
-                      dateTime={article.publishedAt}
-                      className="text-muted-foreground text-xs"
-                    >
-                      {new Date(article.publishedAt).toLocaleDateString(
-                        'en-HK',
-                        { year: 'numeric', month: 'short', day: 'numeric' }
-                      )}
-                    </time>
-                  ) : null}
-                </span>
-              </Link>
+              <ArticleCard article={article} />
             </li>
           ))}
         </ul>
