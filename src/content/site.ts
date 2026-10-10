@@ -179,6 +179,8 @@ type SiteConfig = {
   };
   profile: {
     name: string;
+    /** Name in Traditional Chinese, shown on the page and given to search engines as an alternate name. */
+    chineseName?: string;
     handle?: string;
     role?: string;
     location?: string;
@@ -212,6 +214,8 @@ export const siteConfig: SiteConfig = {
   keywords: [
     'Eric Leung',
     'Eric Leung Hong Kong',
+    '梁焯輝',
+    'Eric Leung 梁焯輝',
     'AI builder',
     'OwlEval',
     'Unwire Launch',
@@ -226,6 +230,7 @@ export const siteConfig: SiteConfig = {
   },
   profile: {
     name: 'Eric Leung',
+    chineseName: '梁焯輝',
     handle: '@ericleung.hk',
     role: 'Builder on the internet',
     location: 'Hong Kong',
