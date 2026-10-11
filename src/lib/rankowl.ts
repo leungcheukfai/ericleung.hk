@@ -77,3 +77,24 @@ export async function getArticle(slug: string): Promise<RankOwlArticle | null> {
   );
   return result?.article ?? null;
 }
+
+/** An unpublished article for the private preview page. Never cached: it changes while you edit. */
+export async function getPreview(
+  id: string
+): Promise<{ status: string; article: RankOwlArticle } | null> {
+  const settings = config();
+  if (!settings || !/^[0-9a-f-]{36}$/i.test(id)) {
+    return null;
+  }
+  try {
+    const response = await fetch(`${settings.base}/api/v1/preview/${id}`, {
+      headers: { authorization: `Bearer ${settings.key}` },
+      cache: 'no-store',
+    });
+    return response.ok
+      ? ((await response.json()) as { status: string; article: RankOwlArticle })
+      : null;
+  } catch {
+    return null;
+  }
+}
